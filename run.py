@@ -24,18 +24,20 @@ def get_all_user_names(user_records):
     """ Get all user name from user records """
     return {record['username']: record for record in user_records}
 
-def signup(users):
-    """ Sign-up option for new user """
+def signup(user_records):
+    """ Sign-up option for new user """   
     
-    while True:
-        username = input("Enter username: ")
-        if username in users:
-            print("Username already exists. Please choose a different username.")
-        else:
-            password = input("Enter password: ")
-            USER_RECORDS_WORKSHEET.append_row([username, password])
-            print("User successfully registered.")
-            break
+    username = input("Enter username: ")
+    user_names = get_all_user_names(user_records)
+    if username in user_names:
+        print("Username already exists. Please choose a different username.")
+        return False
+    else:
+        password = input("Enter password: ")
+        USER_RECORDS_WORKSHEET.append_row([username, password])
+        print("User successfully registered.")
+        return True
+       
 
 def login(user_records):
     """ Authorize the user by prompting the credentials """
@@ -59,7 +61,8 @@ def main():
     while True:
         action = input("Do you want to 'signup' or 'login' or 'quit'? ")
         if action == 'signup':
-            signup(users_records)
+            if signup(users_records):
+                users_records = get_all_user_records() 
         elif action == 'login':
             login(users_records)
         elif action == 'quit':
