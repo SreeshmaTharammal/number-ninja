@@ -55,9 +55,16 @@ def login(user_records):
 
 def main():
     """ Run all program function """
-    users = get_all_user_records()    
-    print(users)
-    login(users)
-    signup(users)
+    users_records = get_all_user_records()    
+    while True:
+        action = input("Do you want to 'signup' or 'login' or 'quit'? ")
+        if action == 'signup':
+            signup(users_records)
+        elif action == 'login':
+            login(users_records)
+        elif action == 'quit':
+            return
+        else:
+            print("Invalid action. Please enter 'signup' or 'login' or 'quit'.")
 
 main()
