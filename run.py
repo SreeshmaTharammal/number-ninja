@@ -20,9 +20,23 @@ def get_all_user_name():
     users = USER_RECORDS_WORKSHEET.col_values(1)[1:]
     return users
 
+def signup(users):
+    """ Sign-up option for new user"""
+    
+    while True:
+        username = input("Enter a username for signup: ")
+        if username in users:
+            print("Username already exists. Please choose a different username.")
+        else:
+            password = input("Enter a password for signup: ")
+            USER_RECORDS_WORKSHEET.append_row([username, password])
+            print("User successfully registered.")
+            break
+
 def main():
     """ Run all program function """
     users = get_all_user_name()    
     print(users)
+    signup(users)
 
 main()
