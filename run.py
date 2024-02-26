@@ -14,10 +14,10 @@ SHEET = GSPREAD_CLIENT.open('number-ninja')
 
 USER_RECORDS_WORKSHEET = SHEET.worksheet("user_records")
 
-def get_all_user_name():
-    """ Get all user names """
-        
-    users = USER_RECORDS_WORKSHEET.col_values(1)[1:]
+def get_all_user_records():
+    """ Get all user records """
+
+    users = USER_RECORDS_WORKSHEET.get_all_records()        
     return users
 
 def signup(users):
