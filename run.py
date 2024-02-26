@@ -25,14 +25,14 @@ def get_all_user_names(user_records):
     return {record['username']: record for record in user_records}
 
 def signup(users):
-    """ Sign-up option for new user"""
+    """ Sign-up option for new user """
     
     while True:
-        username = input("Enter a username for signup: ")
+        username = input("Enter username: ")
         if username in users:
             print("Username already exists. Please choose a different username.")
         else:
-            password = input("Enter a password for signup: ")
+            password = input("Enter password: ")
             USER_RECORDS_WORKSHEET.append_row([username, password])
             print("User successfully registered.")
             break
