@@ -20,6 +20,10 @@ def get_all_user_records():
     users = USER_RECORDS_WORKSHEET.get_all_records()        
     return users
 
+def get_all_user_names(user_records):
+    """ Get all user name from user records """
+    return {record['username']: record for record in user_records}
+
 def signup(users):
     """ Sign-up option for new user"""
     
