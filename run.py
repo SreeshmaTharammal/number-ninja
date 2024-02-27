@@ -107,13 +107,34 @@ def login(user_records):
     print("Login attempt failed!\n\n")
     return False
 
+def user_options_menu():
+    """ 
+    Displays the user option menu which are Game, Show Score 
+    and Quit. 
+    """
+    while True:
+        print("\n\nPlease select an option below.\n")
+        print("1. Game")
+        print("2. Show Score")
+        print("3. Quit\n")
+
+        user_options_menu_response = input("Enter your option: ")
+        if user_options_menu_response == "1":
+            print("Start game.") 
+        elif user_options_menu_response == "2":
+            print("Show score.")                           
+        elif user_options_menu_response == "3":
+            return
+        else:
+            print("Invalid action. Please enter 1 or 2 or 3")
+
 def main_menu(users_records):
     """ 
     Displays the main menu options for the user to 
     create or login account in order to start the game. 
     """   
     while True:
-        print("Please select an option below.\n")
+        print("\n\nPlease select an option below.\n")
         print("1. Login")
         print("2. Sign up")
         print("3. Quit\n")
@@ -121,7 +142,7 @@ def main_menu(users_records):
         main_menu_response = input("Enter your option: ")
         if main_menu_response == "1":
             if login(users_records):
-                print("Login successful.") 
+                user_options_menu() 
         elif main_menu_response == "2":
             if signup(users_records):
                 users_records = get_all_user_records()                           
