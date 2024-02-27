@@ -1,5 +1,6 @@
 import gspread
 from google.oauth2.service_account import Credentials
+import re
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -37,6 +38,13 @@ def signup(user_records):
         return False
     else:
         password = input("Enter password: ")
+        password_constrains = r"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)"\
+            r"(?=.*[!%&*])[A-Za-z\d!%&*]{6,12}"
+        if not re.fullmatch(password_constrains, password):
+            print("Password must be 6-12 characters long and include at least "
+                  "1 lowercase letter, 1 uppercase letter, 1 number, and "
+                  "1 special character (!, %, &, *).")
+            return False
         USER_RECORDS_WORKSHEET.append_row([username, password])
         print("User successfully registered.")
         return True
