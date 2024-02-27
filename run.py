@@ -90,35 +90,38 @@ def signup(user_records):
 
 
 def login(user_records):
-    """ Authorize the user by prompting the credentials. """
-
-    username = input("Enter username: ")
-    password = pwinput("Enter password: ")
+    """ 
+    Authorize the user by prompting the credentials. 
+    If username or password is wrong user will be prompted
+    maximum 3 times for the credentials. 
+    """
+    incorrect_credentials = "Username or password is incorrect."
     user_names = get_all_user_names(user_records)
-    if username in user_names:        
-        if user_names[username]['password'] == password:
-            return True
+    for i in range(3):
+        username = input("Enter username: ")
+        password = pwinput("Enter password: ")
+        if username in user_names:        
+            if user_names[username]['password'] == password:
+                return True
+        print(incorrect_credentials)
+    print("Login attempt failed!\n\n")
     return False
 
 def main_menu(users_records):
     """ 
     Displays the main menu options for the user to 
     create or login account in order to start the game. 
-    """
-        
-    print("Please select an option below.\n")
-    print("1. Login")
-    print("2. Sign up")
-    print("3. Quit")
-
-    incorrect_credentials = "Username or password is incorrect."
+    """   
     while True:
+        print("Please select an option below.\n")
+        print("1. Login")
+        print("2. Sign up")
+        print("3. Quit\n")
+
         main_menu_response = input("Enter your option: ")
         if main_menu_response == "1":
             if login(users_records):
-                print("Login successful.")                   
-            else:
-                print(incorrect_credentials)         
+                print("Login successful.") 
         elif main_menu_response == "2":
             if signup(users_records):
                 users_records = get_all_user_records()                           
