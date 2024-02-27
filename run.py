@@ -25,10 +25,30 @@ def get_all_user_records():
 
 def get_all_user_names(user_records):
     """ Get all user name from user records """
+
     return {record['username']: record for record in user_records}
+
+def is_valid_username(username):
+    """ Do password validation """
+
+    username_constrains = r"^[a-zA-Z][a-zA-Z0-9_]{3,11}$"
+    if not re.fullmatch(username_constrains, username):
+        return False
+    return True
+
+def show_username_constrains():
+    """ Show username constrains message """
+
+    username_constrains_msg = "Username must be 4 to 12 characters long. "\
+            "Username must start with an alphabet "\
+            "character. The usename can contain alphabets, numbers "\
+            "or underscores."
+    print(f"\n{username_constrains_msg}")
+
 
 def is_valid_password(password):
     """ Do password validation """
+
     password_constrains = r"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)"\
             r"(?=.*[!%&*])[A-Za-z\d!%&*]{6,12}"
     if not re.fullmatch(password_constrains, password):
@@ -36,15 +56,22 @@ def is_valid_password(password):
     return True
 
 def show_password_constrains():
+    """ Show password constrains message """
+    
     password_constrains_msg = "Password must be 6-12 characters long "\
             "and include at least 1 lowercase letter, 1 uppercase letter, "\
                 "1 number, and 1 special character (!, %, &, *)."
     print(f"\n{password_constrains_msg}")
 
+
 def signup(user_records):
     """ Sign-up option for new user """
 
+    show_username_constrains()
     username = input("Enter username: ")
+    if not is_valid_username(username):
+        show_username_constrains()
+        return
     user_names = get_all_user_names(user_records)
     if username in user_names:
         print("Username already exists. Please choose a different username.")
