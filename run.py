@@ -27,6 +27,13 @@ def get_all_user_names(user_records):
     """ Get all user name from user records """
     return {record['username']: record for record in user_records}
 
+def is_valid_password(password):
+    password_constrains = r"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)"\
+            r"(?=.*[!%&*])[A-Za-z\d!%&*]{6,12}"
+    if not re.fullmatch(password_constrains, password):
+        return False
+    return True
+
 
 def signup(user_records):
     """ Sign-up option for new user """
@@ -42,9 +49,7 @@ def signup(user_records):
                 "1 number, and 1 special character (!, %, &, *)."
         print(f"\n{password_constrains_msg}")
         password = input("Enter password: ")
-        password_constrains = r"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)"\
-            r"(?=.*[!%&*])[A-Za-z\d!%&*]{6,12}"
-        if not re.fullmatch(password_constrains, password):
+        if not is_valid_password(password):
             print(password_constrains_msg)
             return False
         USER_RECORDS_WORKSHEET.append_row([username, password])
