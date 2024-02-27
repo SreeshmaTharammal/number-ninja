@@ -37,13 +37,15 @@ def signup(user_records):
         print("Username already exists. Please choose a different username.")
         return False
     else:
+        password_constrains_msg = "Password must be 6-12 characters long "\
+            "and include at least 1 lowercase letter, 1 uppercase letter, "\
+                "1 number, and 1 special character (!, %, &, *)."
+        print(f"\n{password_constrains_msg}")
         password = input("Enter password: ")
         password_constrains = r"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)"\
             r"(?=.*[!%&*])[A-Za-z\d!%&*]{6,12}"
         if not re.fullmatch(password_constrains, password):
-            print("Password must be 6-12 characters long and include at least "
-                  "1 lowercase letter, 1 uppercase letter, 1 number, and "
-                  "1 special character (!, %, &, *).")
+            print(password_constrains_msg)
             return False
         USER_RECORDS_WORKSHEET.append_row([username, password])
         print("User successfully registered.")
