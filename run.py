@@ -1,3 +1,4 @@
+import os
 import gspread
 from google.oauth2.service_account import Credentials
 import re
@@ -40,9 +41,9 @@ def is_valid_username(username):
 def show_username_constrains():
     """ Show username constrains message """
 
-    username_constrains_msg = "Username must be 4 to 12 characters long. "\
+    username_constrains_msg = "Username must be 4 to 12 characters long.\n"\
             "Username must start with an alphabet "\
-            "character. The usename can contain alphabets, numbers "\
+            "character.\nThe usename can contain alphabets, numbers "\
             "or underscores."
     print(f"\n{username_constrains_msg}")
 
@@ -59,14 +60,14 @@ def is_valid_password(password):
 def show_password_constrains():
     """ Show password constrains message """
 
-    password_constrains_msg = "Password must be 6-12 characters long "\
-            "and include at least 1 lowercase letter, 1 uppercase letter, "\
+    password_constrains_msg = "Password must be 6-12 characters long\n"\
+            "and include at least 1 lowercase letter, 1 uppercase letter,\n"\
                 "1 number, and 1 special character (!, %, &, *)."
     print(f"\n{password_constrains_msg}")
 
 
 def signup(user_records):
-    """ Sign-up option for new user """
+    """ Sign-up option for new user. """
 
     show_username_constrains()
     username = input("Enter username: ")
@@ -89,37 +90,48 @@ def signup(user_records):
 
 
 def login(user_records):
-    """ Authorize the user by prompting the credentials """
+    """ Authorize the user by prompting the credentials. """
 
     username = input("Enter username: ")
     password = pwinput("Enter password: ")
     user_names = get_all_user_names(user_records)
-    if username in user_names:
-        print(user_names[username]['password'])
+    if username in user_names:        
         if user_names[username]['password'] == password:
             return True
     return False
 
-
-def main():
-    """ Run all program function """
+def main_menu(users_records):
+    """ 
+    Displays the main menu options for the user to 
+    create or login account in order to start the game. 
+    """
+        
+    print("Please select an option below.\n")
+    print("1. Login")
+    print("2. Sign up")
+    print("3. Quit")
 
     incorrect_credentials = "Username or password is incorrect."
-    users_records = get_all_user_records()
     while True:
-        action = input("Do you want to 'signup' or 'login' or 'quit'? ")
-        if action == 'signup':
-            if signup(users_records):
-                users_records = get_all_user_records()
-        elif action == 'login':
+        main_menu_response = input("Enter your option: ")
+        if main_menu_response == "1":
             if login(users_records):
-                print("Login successful.")
+                print("Login successful.")                   
             else:
-                print(incorrect_credentials)
-        elif action == 'quit':
+                print(incorrect_credentials)         
+        elif main_menu_response == "2":
+            if signup(users_records):
+                users_records = get_all_user_records()                           
+        elif main_menu_response == "3":
             return
         else:
-            print("Invalid action. Please enter 'signup' or 'login' or 'quit'")
+            print("Invalid action. Please enter 1 or 2 or 3")
+
+def main():
+    """ Runs necessary functions at the start of the program. """
+    
+    users_records = get_all_user_records()  
+    main_menu(users_records) 
 
 
 main()
