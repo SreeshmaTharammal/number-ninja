@@ -14,19 +14,22 @@ SHEET = GSPREAD_CLIENT.open('number-ninja')
 
 USER_RECORDS_WORKSHEET = SHEET.worksheet("user_records")
 
+
 def get_all_user_records():
     """ Get all user records """
 
-    users = USER_RECORDS_WORKSHEET.get_all_records()        
+    users = USER_RECORDS_WORKSHEET.get_all_records()
     return users
+
 
 def get_all_user_names(user_records):
     """ Get all user name from user records """
     return {record['username']: record for record in user_records}
 
+
 def signup(user_records):
-    """ Sign-up option for new user """   
-    
+    """ Sign-up option for new user """
+
     username = input("Enter username: ")
     user_names = get_all_user_names(user_records)
     if username in user_names:
@@ -37,19 +40,18 @@ def signup(user_records):
         USER_RECORDS_WORKSHEET.append_row([username, password])
         print("User successfully registered.")
         return True
-       
+
 
 def login(user_records):
     """ Authorize the user by prompting the credentials """
-    
+
     username = input("Enter username: ")
     password = input("Enter password: ")
     user_names = get_all_user_names(user_records)
-    if username in user_names:    
-        print(user_names[username]['password'])          
-        if user_names[username]['password'] == password:               
-            return True         
-        
+    if username in user_names:
+        print(user_names[username]['password'])
+        if user_names[username]['password'] == password:
+            return True
     return False
 
 
@@ -57,12 +59,12 @@ def main():
     """ Run all program function """
 
     incorrect_credentials = "Username or password is incorrect."
-    users_records = get_all_user_records()    
+    users_records = get_all_user_records()
     while True:
         action = input("Do you want to 'signup' or 'login' or 'quit'? ")
         if action == 'signup':
             if signup(users_records):
-                users_records = get_all_user_records() 
+                users_records = get_all_user_records()
         elif action == 'login':
             if login(users_records):
                 print("Login successful.")
@@ -71,6 +73,7 @@ def main():
         elif action == 'quit':
             return
         else:
-            print("Invalid action. Please enter 'signup' or 'login' or 'quit'.")
+            print("Invalid action. Please enter 'signup' or 'login' or 'quit'")
+
 
 main()
