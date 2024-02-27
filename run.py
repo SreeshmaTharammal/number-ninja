@@ -41,22 +41,22 @@ def signup(user_records):
 
 def login(user_records):
     """ Authorize the user by prompting the credentials """
-    incorrect_credentials = "Username or password is incorrect."
+    
     username = input("Enter username: ")
     password = input("Enter password: ")
     user_names = get_all_user_names(user_records)
     if username in user_names:    
         print(user_names[username]['password'])          
-        if user_names[username]['password'] == password:
-            print("Login successful.")            
-        else:
-            print(incorrect_credentials)
-    else:
-        print(incorrect_credentials)
+        if user_names[username]['password'] == password:               
+            return True         
+        
+    return False
 
 
 def main():
     """ Run all program function """
+
+    incorrect_credentials = "Username or password is incorrect."
     users_records = get_all_user_records()    
     while True:
         action = input("Do you want to 'signup' or 'login' or 'quit'? ")
@@ -64,7 +64,10 @@ def main():
             if signup(users_records):
                 users_records = get_all_user_records() 
         elif action == 'login':
-            login(users_records)
+            if login(users_records):
+                print("Login successful.")
+            else:
+                print(incorrect_credentials)
         elif action == 'quit':
             return
         else:
