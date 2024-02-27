@@ -1,6 +1,7 @@
 import gspread
 from google.oauth2.service_account import Credentials
 import re
+from pwinput import pwinput
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -57,7 +58,7 @@ def is_valid_password(password):
 
 def show_password_constrains():
     """ Show password constrains message """
-    
+
     password_constrains_msg = "Password must be 6-12 characters long "\
             "and include at least 1 lowercase letter, 1 uppercase letter, "\
                 "1 number, and 1 special character (!, %, &, *)."
@@ -78,7 +79,7 @@ def signup(user_records):
         return False
     else:
         show_password_constrains()
-        password = input("Enter password: ")
+        password = pwinput("Enter password: ")        
         if not is_valid_password(password):
             show_password_constrains()
             return False
@@ -91,7 +92,7 @@ def login(user_records):
     """ Authorize the user by prompting the credentials """
 
     username = input("Enter username: ")
-    password = input("Enter password: ")
+    password = pwinput("Enter password: ")
     user_names = get_all_user_names(user_records)
     if username in user_names:
         print(user_names[username]['password'])
