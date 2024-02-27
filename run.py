@@ -107,6 +107,31 @@ def login(user_records):
     print("Login attempt failed!\n\n")
     return False
 
+def level_menu():
+    """
+    Displays the level menu for the user to select levels
+    Easy, Medium or Hard or Quit
+    """
+    while True:
+        print("\n\nPlease select an option below.\n")
+        print("1. Easy")
+        print("2. Medium")
+        print("3. Hard")
+        print("4. Quit\n")
+
+        level_menu_response = input("Enter your option: ")
+        if level_menu_response == "1":
+            print("Easy.") 
+        elif level_menu_response == "2":
+            print("Medium.")  
+        elif level_menu_response == "3":
+            print("Hard.")                                
+        elif level_menu_response == "4":
+            return
+        else:
+            print("Invalid action. Please enter 1 or 2 or 3 or 4")
+
+
 def user_options_menu():
     """ 
     Displays the user option menu which are Game, Show Score 
@@ -120,7 +145,7 @@ def user_options_menu():
 
         user_options_menu_response = input("Enter your option: ")
         if user_options_menu_response == "1":
-            print("Start game.") 
+            level_menu() 
         elif user_options_menu_response == "2":
             print("Show score.")                           
         elif user_options_menu_response == "3":
