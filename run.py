@@ -107,7 +107,8 @@ def login(user_records):
     print("Login attempt failed!\n\n")
     return False
 
-def opertion_menu():
+
+def operation_menu():
     """
     Displays the operation menu for the user to select arithmatic
     operators '+', '-' or '*' or '/'
@@ -122,15 +123,15 @@ def opertion_menu():
 
         opertion_menu_response = input("Enter your option: ")
         if opertion_menu_response == "1":
-            print("Addition.") 
+            return '+' 
         elif opertion_menu_response == "2":
-            print("Subtration.")  
+            return '-'
         elif opertion_menu_response == "3":
-            print("Multiply.")
+            return '*'
         elif opertion_menu_response == "4":
-            print("Division.")
+            return '/'
         elif opertion_menu_response == "5":
-            return
+            return 'q'
         else:
             print("Invalid action. Please enter 1 or 2 or 3 or 4 or 5")
 
@@ -149,15 +150,26 @@ def level_menu():
 
         level_menu_response = input("Enter your option: ")
         if level_menu_response == "1":
-            print("Easy.") 
+            return "easy" 
         elif level_menu_response == "2":
-            print("Medium.")  
+            return "medium"  
         elif level_menu_response == "3":
-            print("Hard.")                                
+            return "hard"                                
         elif level_menu_response == "4":
-            return
+            return "q"
         else:
             print("Invalid action. Please enter 1 or 2 or 3 or 4")
+
+
+def start_game():
+    """ Start the game by getting the level and operation. """
+    level = level_menu()
+    if level == "q":
+        return
+    
+    operation = operation_menu()
+    if operation == "q":
+        return
 
 
 def user_options_menu():
@@ -173,14 +185,14 @@ def user_options_menu():
 
         user_options_menu_response = input("Enter your option: ")
         if user_options_menu_response == "1":
-            level_menu() 
-            opertion_menu()
+            start_game()
         elif user_options_menu_response == "2":
             print("Show score.")                           
         elif user_options_menu_response == "3":
             return
         else:
             print("Invalid action. Please enter 1 or 2 or 3")
+
 
 def main_menu(users_records):
     """ 
@@ -204,6 +216,7 @@ def main_menu(users_records):
             return
         else:
             print("Invalid action. Please enter 1 or 2 or 3")
+
 
 def main():
     """ Runs necessary functions at the start of the program. """
