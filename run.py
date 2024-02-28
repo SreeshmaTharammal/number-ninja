@@ -3,6 +3,7 @@ import gspread
 from google.oauth2.service_account import Credentials
 import re
 from pwinput import pwinput
+import random
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -16,6 +17,18 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('number-ninja')
 
 USER_RECORDS_WORKSHEET = SHEET.worksheet("user_records")
+
+class NumberGenerator:
+    """ Random number generator class based on level """
+    def __init__(self, level):
+        self.level = level
+    def get_number(self):
+        if self.level == 'easy':
+            return random.randint(0, 9)           
+        elif self.level == 'medium':
+            return random.randint(0, 99)            
+        elif self.level == 'hard':
+            return random.randint(0, 9999)            
 
 
 def get_all_user_records():
@@ -171,6 +184,8 @@ def start_game():
     if operation == "q":
         return
 
+    number_generator = NumberGenerator(level)
+    print(number_generator.get_number())
 
 def user_options_menu():
     """ 
