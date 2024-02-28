@@ -107,6 +107,34 @@ def login(user_records):
     print("Login attempt failed!\n\n")
     return False
 
+def opertion_menu():
+    """
+    Displays the operation menu for the user to select arithmatic
+    operators '+', '-' or '*' or '/'
+    """
+    while True:
+        print("\n\nPlease select an option below.\n")
+        print("1. Addition")
+        print("2. Subtration")
+        print("3. Multiplication")
+        print("4. Division")
+        print("5. Quit\n")
+
+        opertion_menu_response = input("Enter your option: ")
+        if opertion_menu_response == "1":
+            print("Addition.") 
+        elif opertion_menu_response == "2":
+            print("Subtration.")  
+        elif opertion_menu_response == "3":
+            print("Multiply.")
+        elif opertion_menu_response == "4":
+            print("Division.")
+        elif opertion_menu_response == "5":
+            return
+        else:
+            print("Invalid action. Please enter 1 or 2 or 3 or 4 or 5")
+
+
 def level_menu():
     """
     Displays the level menu for the user to select levels
@@ -146,6 +174,7 @@ def user_options_menu():
         user_options_menu_response = input("Enter your option: ")
         if user_options_menu_response == "1":
             level_menu() 
+            opertion_menu()
         elif user_options_menu_response == "2":
             print("Show score.")                           
         elif user_options_menu_response == "3":
