@@ -55,6 +55,18 @@ class ArithematicOperator(NumberGenerator):
         if int(result) == user_response:
             return True
         return False
+    
+    def start(self):
+        score = 0
+        for i in range(10):
+            num1 = super().get_number()
+            num2 = super().get_number()
+            user_response = self.__get_user_response(num1, num2)
+            result = self.__is_answer_correct(num1, num2, user_response)
+            if result == True:
+                score += 1
+        print(f"score = {score}") 
+
 
     
 
@@ -210,15 +222,10 @@ def start_game():
     operation = operation_menu()
     if operation == "q":
         return
-
-    number_generator = NumberGenerator(level)
-    num1 = number_generator.get_number()
-    num2 = number_generator.get_number()
-
+   
     arithematic_operator = ArithematicOperator(level, operation)
-    user_response = arithematic_operator._ArithematicOperator__get_user_response(num1, num2)
-    print(arithematic_operator._ArithematicOperator__is_answer_correct(num1, num2, user_response))
-    
+    arithematic_operator.start()
+        
 
 def user_options_menu():
     """ 
