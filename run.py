@@ -22,7 +22,9 @@ class NumberGenerator:
     """ Random number generator class based on level """
     def __init__(self, level):
         self.level = level
+
     def get_number(self):
+        """ Returns the ramdom number based on level """
         if self.level == 'easy':
             return random.randint(0, 9)           
         elif self.level == 'medium':
@@ -30,6 +32,23 @@ class NumberGenerator:
         elif self.level == 'hard':
             return random.randint(0, 9999)            
 
+
+class ArithematicOperator(NumberGenerator):
+    """ Arithematic operator class """
+    def __init__(self, level, operation):              
+        super().__init__(level)
+        self.operation = operation
+        
+    def __get_user_response(self, num1, num2):
+        """ Return user response for the operation """
+        print(f"{num1} {self.operation} {num2} = ?")
+        
+        while True:
+            try:
+                return int(input("Enter your answer: "))
+            except ValueError:
+                print("Enter a valid response\n")
+    
 
 def get_all_user_records():
     """ Get all user records """
@@ -185,7 +204,12 @@ def start_game():
         return
 
     number_generator = NumberGenerator(level)
-    print(number_generator.get_number())
+    num1 = number_generator.get_number()
+    num2 = number_generator.get_number()
+
+    arithematic_operator = ArithematicOperator(level, operation)
+    print(arithematic_operator._ArithematicOperator__get_user_response(num1, num2))
+    
 
 def user_options_menu():
     """ 
