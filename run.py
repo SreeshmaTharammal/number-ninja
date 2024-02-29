@@ -48,6 +48,14 @@ class ArithematicOperator(NumberGenerator):
                 return int(input("Enter your answer: "))
             except ValueError:
                 print("Enter a valid response\n")
+
+    def __is_answer_correct(self, num1, num2, user_response):
+        expression = f"{num1} {self.operation} {num2}" 
+        result = eval(expression)
+        if int(result) == user_response:
+            return True
+        return False
+
     
 
 def get_all_user_records():
@@ -208,7 +216,8 @@ def start_game():
     num2 = number_generator.get_number()
 
     arithematic_operator = ArithematicOperator(level, operation)
-    print(arithematic_operator._ArithematicOperator__get_user_response(num1, num2))
+    user_response = arithematic_operator._ArithematicOperator__get_user_response(num1, num2)
+    print(arithematic_operator._ArithematicOperator__is_answer_correct(num1, num2, user_response))
     
 
 def user_options_menu():
