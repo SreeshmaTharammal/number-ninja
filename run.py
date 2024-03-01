@@ -33,8 +33,8 @@ class NumberGenerator:
             return random.randint(0, 9999)            
 
 
-class ArithematicOperator(NumberGenerator):
-    """ Arithematic operator class """
+class ArithmaticOperator(NumberGenerator):
+    """ Arithmatic operator class """
     def __init__(self, level, operation):              
         super().__init__(level)
         self.operation = operation
@@ -68,19 +68,34 @@ class ArithematicOperator(NumberGenerator):
         print(f"score = {score}") 
 
 
+class UserDetails:
+    """ """
+    def __init__(self):
+        self.__update_user_records()
+
+    def __update_user_records(self):
+        """ Update user records and username """
+        data = USER_RECORDS_WORKSHEET.get_all_records()
+        self.__user_records = {record['username']: record for record in 
+                             data}
+
+    def is_username_exist(self, username):
+        """ """
+        return username in self.__user_records
     
-
-def get_all_user_records():
-    """ Get all user records """
-
-    users = USER_RECORDS_WORKSHEET.get_all_records()
-    return users
-
-
-def get_all_user_names(user_records):
-    """ Get all user name from user records """
-
-    return {record['username']: record for record in user_records}
+    def is_valid_credential(self, username, password):
+        """ """
+        if not self.is_username_exist(username):
+            return False
+        if self.__user_records[username]['password'] == password:
+                return True
+        return False
+    
+    def add_user(self, username, password):
+        """ """
+        USER_RECORDS_WORKSHEET.append_row([username, password])
+        self.__update_user_records()
+        
 
 def is_valid_username(username):
     """ Do password validation """
@@ -118,43 +133,39 @@ def show_password_constrains():
     print(f"\n{password_constrains_msg}")
 
 
-def signup(user_records):
+def signup(user_details):
     """ Sign-up option for new user. """
-
     show_username_constrains()
     username = input("Enter username: ")
     if not is_valid_username(username):
         show_username_constrains()
         return
-    user_names = get_all_user_names(user_records)
-    if username in user_names:
+    
+    if user_details.is_username_exist(username):
         print("Username already exists. Please choose a different username.")
-        return False
+        return
     else:
         show_password_constrains()
         password = pwinput("Enter password: ")        
         if not is_valid_password(password):
             show_password_constrains()
-            return False
-        USER_RECORDS_WORKSHEET.append_row([username, password])
+            return        
         print("User successfully registered.")
-        return True
 
 
-def login(user_records):
+def login(user_details):
     """ 
     Authorize the user by prompting the credentials. 
     If username or password is wrong user will be prompted
     maximum 3 times for the credentials. 
     """
     incorrect_credentials = "Username or password is incorrect."
-    user_names = get_all_user_names(user_records)
+    
     for i in range(3):
         username = input("Enter username: ")
         password = pwinput("Enter password: ")
-        if username in user_names:        
-            if user_names[username]['password'] == password:
-                return True
+        if user_details.is_valid_credential(username, password):        
+            return True
         print(incorrect_credentials)
     print("Login attempt failed!\n\n")
     return False
@@ -223,8 +234,8 @@ def start_game():
     if operation == "q":
         return
    
-    arithematic_operator = ArithematicOperator(level, operation)
-    arithematic_operator.start()
+    arithmatic_operator = ArithmaticOperator(level, operation)
+    arithmatic_operator.start()
         
 
 def user_options_menu():
@@ -249,11 +260,12 @@ def user_options_menu():
             print("Invalid action. Please enter 1 or 2 or 3")
 
 
-def main_menu(users_records):
+def main_menu():
     """ 
     Displays the main menu options for the user to 
     create or login account in order to start the game. 
     """   
+    user_details = UserDetails()
     while True:
         print("\n\nPlease select an option below.\n")
         print("1. Login")
@@ -262,11 +274,10 @@ def main_menu(users_records):
 
         main_menu_response = input("Enter your option: ")
         if main_menu_response == "1":
-            if login(users_records):
+            if login(user_details):
                 user_options_menu() 
         elif main_menu_response == "2":
-            if signup(users_records):
-                users_records = get_all_user_records()                           
+            signup(user_details)    
         elif main_menu_response == "3":
             return
         else:
@@ -275,9 +286,7 @@ def main_menu(users_records):
 
 def main():
     """ Runs necessary functions at the start of the program. """
-    
-    users_records = get_all_user_records()  
-    main_menu(users_records) 
+    main_menu() 
 
 
 main()
