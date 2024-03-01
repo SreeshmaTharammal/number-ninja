@@ -39,9 +39,10 @@ class ArithmaticOperator(NumberGenerator):
         super().__init__(level)
         self.operation = operation
         
-    def __get_user_response(self, num1, num2):
-        """ Return user response for the operation """
-        print(f"{num1} {self.operation} {num2} = ?")
+    def __get_user_response(self, num1, num2, count):
+        """ Return user response for the operation """ 
+        print(f"\n*********Question {count}*********\n")     
+        print(f"{num1} {self.operation} {num2} = ?")        
         
         while True:
             try:
@@ -61,10 +62,13 @@ class ArithmaticOperator(NumberGenerator):
         for i in range(10):
             num1 = super().get_number()
             num2 = super().get_number()
-            user_response = self.__get_user_response(num1, num2)
+            user_response = self.__get_user_response(num1, num2, i+1)
             result = self.__is_answer_correct(num1, num2, user_response)
             if result == True:
                 score += 1
+                print("\n***********Correct***********\n")
+            else:
+                print("\n***********Wrong***********\n")
         print(f"score = {score}") 
 
 
