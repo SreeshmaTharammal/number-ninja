@@ -4,6 +4,7 @@ from google.oauth2.service_account import Credentials
 import re
 from pwinput import pwinput
 import random
+from tabulate import tabulate
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -245,10 +246,15 @@ def start_game():
     arithmatic_operator.start()
         
 def show_score(user_details):
+    score_list = [['Level', 'Add', 'Subtract', 'Multiply', 'Division']]
     for level in ['easy', 'medium', 'hard' ]:
+        level_score_list = []
+        level_score_list.append(level)
         for operator in ['add', 'subtract', 'multiply', 'division']:
-            print(f"{level}_{operator} = {user_details.get_score('sree', level, operator)}")
-            
+            level_score_list.append(user_details.get_score('sree', level, operator))
+        score_list.append(level_score_list)
+    print("\n")
+    print(tabulate(score_list, headers = "firstrow", tablefmt = "orgtbl"))       
 
 def user_options_menu(user_details):
     """ 
