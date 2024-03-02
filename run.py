@@ -99,6 +99,9 @@ class UserDetails:
         """ """
         USER_RECORDS_WORKSHEET.append_row([username, password])
         self.__update_user_records()
+
+    def get_score(self, username, level, operator):
+        return self.__user_records[username][f"{level}_{operator}"]
         
 
 def is_valid_username(username):
@@ -241,8 +244,13 @@ def start_game():
     arithmatic_operator = ArithmaticOperator(level, operation)
     arithmatic_operator.start()
         
+def show_score(user_details):
+    for level in ['easy', 'medium', 'hard' ]:
+        for operator in ['add', 'subtract', 'multiply', 'division']:
+            print(f"{level}_{operator} = {user_details.get_score('sree', level, operator)}")
+            
 
-def user_options_menu():
+def user_options_menu(user_details):
     """ 
     Displays the user option menu which are Game, Show Score 
     and Quit. 
@@ -257,7 +265,7 @@ def user_options_menu():
         if user_options_menu_response == "1":
             start_game()
         elif user_options_menu_response == "2":
-            print("Show score.")                           
+            show_score(user_details)                           
         elif user_options_menu_response == "3":
             return
         else:
@@ -279,7 +287,7 @@ def main_menu():
         main_menu_response = input("Enter your option: ")
         if main_menu_response == "1":
             if login(user_details):
-                user_options_menu() 
+                user_options_menu(user_details) 
         elif main_menu_response == "2":
             signup(user_details)    
         elif main_menu_response == "3":
