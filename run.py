@@ -70,11 +70,33 @@ class ArithmaticOperator(NumberGenerator):
                 print("\n***********Correct***********\n")
             else:
                 print("\n***********Wrong***********\n")
-        print(f"score = {score}") 
+        return score 
 
 
 class UserDetails:
     """ """
+    score_cell_index_dict = {
+        "easy_+": 3,
+        "medium_+": 4,
+        "hard_+": 5,
+        "easy_-": 6,
+         "medium_-": 7,
+        "hard_-": 8,
+        "easy_*": 9,
+        "medium_*": 10, 
+         "hard_*": 11,
+        "easy_/": 12,
+        "medium_/": 13,
+        "hard_/": 14
+    } 
+
+    operator_converter_dict = {
+        "+": "add",
+        "-": "subtract",
+        "*": "multiply",
+        "/": "division"
+    }
+
     def __init__(self):
         self.__update_user_records()
 
@@ -102,12 +124,24 @@ class UserDetails:
         self.__update_user_records()
 
     def get_score(self, username, level, operator):
-        return self.__user_records[username][f"{level}_{operator}"]
-        
+        """ """
+        cell_operator_name = UserDetails.operator_converter_dict[operator]
+        return self.__user_records[username][f"{level}_{cell_operator_name}"]
+    
+    def update_score(self, username, level, operator, score):
+        """ """
+        if score <= self.get_score(username, level, operator):
+            return
+        username_cell = USER_RECORDS_WORKSHEET.find(username)
+        col_to_update = UserDetails.score_cell_index_dict[f"{level}_{operator}"]
+        cell_to_update = USER_RECORDS_WORKSHEET.cell(username_cell.row, col_to_update)
+        cell_to_update.value = score
+        USER_RECORDS_WORKSHEET.update_cells([cell_to_update])
+        self.__update_user_records()
+      
 
 def is_valid_username(username):
     """ Do password validation """
-
     username_constrains = r"^[a-zA-Z][a-zA-Z0-9_]{3,11}$"
     if not re.fullmatch(username_constrains, username):
         return False
@@ -115,7 +149,6 @@ def is_valid_username(username):
 
 def show_username_constrains():
     """ Show username constrains message """
-
     username_constrains_msg = "Username must be 4 to 12 characters long.\n"\
             "Username must start with an alphabet "\
             "character.\nThe usename can contain alphabets, numbers "\
@@ -125,7 +158,6 @@ def show_username_constrains():
 
 def is_valid_password(password):
     """ Do password validation """
-
     password_constrains = r"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)"\
             r"(?=.*[!%&*])[A-Za-z\d!%&*]{6,12}"
     if not re.fullmatch(password_constrains, password):
@@ -134,7 +166,6 @@ def is_valid_password(password):
 
 def show_password_constrains():
     """ Show password constrains message """
-
     password_constrains_msg = "Password must be 6-12 characters long\n"\
             "and include at least 1 lowercase letter, 1 uppercase letter,\n"\
                 "1 number, and 1 special character (!, %, &, *)."
@@ -232,7 +263,7 @@ def level_menu():
             print("Invalid action. Please enter 1 or 2 or 3 or 4")
 
 
-def start_game():
+def start_game(user_details):
     """ Start the game by getting the level and operation. """
     level = level_menu()
     if level == "q":
@@ -243,14 +274,17 @@ def start_game():
         return
    
     arithmatic_operator = ArithmaticOperator(level, operation)
-    arithmatic_operator.start()
+    score = arithmatic_operator.start()
+    user_details.update_score('sree', level, operation, score)
+ 
         
 def show_score(user_details):
+    """ """
     score_list = [['Level', 'Add', 'Subtract', 'Multiply', 'Division']]
     for level in ['easy', 'medium', 'hard' ]:
         level_score_list = []
         level_score_list.append(level)
-        for operator in ['add', 'subtract', 'multiply', 'division']:
+        for operator in ['+', '-', '*', '/']:
             level_score_list.append(user_details.get_score('sree', level, operator))
         score_list.append(level_score_list)
     print("\n")
@@ -269,7 +303,7 @@ def user_options_menu(user_details):
 
         user_options_menu_response = input("Enter your option: ")
         if user_options_menu_response == "1":
-            start_game()
+            start_game(user_details)
         elif user_options_menu_response == "2":
             show_score(user_details)                           
         elif user_options_menu_response == "3":
