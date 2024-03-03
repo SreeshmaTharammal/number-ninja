@@ -27,23 +27,23 @@ class NumberGenerator:
     def get_number(self):
         """ Returns the ramdom number based on level """
         if self.level == 'easy':
-            return random.randint(0, 9)           
+            return random.randint(0, 9)
         elif self.level == 'medium':
-            return random.randint(0, 99)            
+            return random.randint(0, 99)
         elif self.level == 'hard':
-            return random.randint(0, 9999)            
+            return random.randint(0, 9999)
 
 
 class ArithmaticOperator(NumberGenerator):
     """ Arithmatic operator class """
-    def __init__(self, level, operation):              
+    def __init__(self, level, operation):
         super().__init__(level)
         self.operation = operation
-        
+
     def __get_user_response(self, num1, num2, count):
         """ Return user response for the operation """ 
-        print(f"\n*********Question {count}*********\n")     
-        print(f"{num1} {self.operation} {num2} = ?")        
+        print(f"\n*********Question {count}*********\n")
+        print(f"{num1} {self.operation} {num2} = ?")
         
         while True:
             try:
@@ -57,7 +57,7 @@ class ArithmaticOperator(NumberGenerator):
         if int(result) == user_response:
             return True
         return False
-    
+
     def start(self):
         score = 0
         for i in range(10):
@@ -90,16 +90,15 @@ class UserManager:
         for i in range(3):
             username = input("Enter username: ")
             password = pwinput("Enter password: ")
-            if self.__user_details.is_valid_credential(username, password):     
+            if self.__user_details.is_valid_credential(username, password):
                 self.__current_username = username
                 return True
             print(incorrect_credentials)
         print("Login attempt failed!\n\n")
         return False
-        
+
     def signup(self):
-        """ Sign-up option for new user. """
-        self.__show_username_constrains()
+        """ Sign-up option for new user. """        
         username = input("Enter username: ")
         if not self.__is_valid_username(username):
             self.__show_username_constrains()
@@ -108,12 +107,11 @@ class UserManager:
         if self.__user_details.is_username_exist(username):
             print("Username already exists. Please choose a different username.")
             return
-        else:
-            self.__show_password_constrains()
-            password = pwinput("Enter password: ")        
+        else:            
+            password = pwinput("Enter password: ")
             if not self.__is_valid_password(password):
                 self.__show_password_constrains()
-                return        
+                return
             print("User successfully registered.")
 
     def get_score(self, level, operator):
@@ -133,10 +131,11 @@ class UserManager:
 
     def __show_username_constrains(self):
         """ Show username constrains message """
-        username_constrains_msg = "Username must be 4 to 12 characters long.\n"\
-                "Username must start with an alphabet "\
-                "character.\nThe usename can contain alphabets, numbers "\
-                "or underscores."
+        username_constrains_msg = "Invalid username, username must:\n"\
+                "- At least 4 letters and maximum 12.\n"\
+                "- Starts with an alphabet.\n"\
+                "- Contain alphabets, numbers or underscores.\n"\
+                "- No spaces."                
         print(f"\n{username_constrains_msg}")
 
     def __is_valid_password(self, password):
@@ -149,9 +148,13 @@ class UserManager:
 
     def __show_password_constrains(self):
         """ Show password constrains message """
-        password_constrains_msg = "Password must be 6-12 characters long\n"\
-                "and include at least 1 lowercase letter, 1 uppercase letter,\n"\
-                    "1 number, and 1 special character (!, %, &, *)."
+        password_constrains_msg = "Invalid password, password must include:\n"\
+                "- At least 6 letters and maximum 12.\n"\
+                "- At least 1 lowercase letter.\n"\
+                "- At least 1 uppercase letter.\n"\
+                "- At least 1 number.\n"\
+                "- At least 1 special character (!, %, &, *).\n"\
+                "- No spaces."
         print(f"\n{password_constrains_msg}")
 
 
@@ -162,11 +165,11 @@ class UserDetails:
         "medium_+": 4,
         "hard_+": 5,
         "easy_-": 6,
-         "medium_-": 7,
+        "medium_-": 7,
         "hard_-": 8,
         "easy_*": 9,
         "medium_*": 10, 
-         "hard_*": 11,
+        "hard_*": 11,
         "easy_/": 12,
         "medium_/": 13,
         "hard_/": 14
@@ -191,15 +194,15 @@ class UserDetails:
     def is_username_exist(self, username):
         """ """
         return username in self.__user_records
-    
+
     def is_valid_credential(self, username, password):
         """ """
         if not self.is_username_exist(username):
             return False
         if self.__user_records[username]['password'] == password:
-                return True
+            return True
         return False
-    
+
     def add_user(self, username, password):
         """ """
         USER_RECORDS_WORKSHEET.append_row([username, password])
@@ -209,7 +212,7 @@ class UserDetails:
         """ """
         cell_operator_name = UserDetails.operator_converter_dict[operator]
         return self.__user_records[username][f"{level}_{cell_operator_name}"]
-    
+
     def update_score(self, username, level, operator, score):
         """ """
         if score <= self.get_score(username, level, operator):
@@ -220,7 +223,7 @@ class UserDetails:
         cell_to_update.value = score
         USER_RECORDS_WORKSHEET.update_cells([cell_to_update])
         self.__update_user_records()
-      
+
 
 def operation_menu():
     """
@@ -268,7 +271,7 @@ def level_menu():
         elif level_menu_response == "2":
             return "medium"  
         elif level_menu_response == "3":
-            return "hard"                                
+            return "hard"
         elif level_menu_response == "4":
             return "q"
         else:
@@ -280,17 +283,17 @@ def start_game(user_manager):
     level = level_menu()
     if level == "q":
         return
-    
+
     operation = operation_menu()
     if operation == "q":
         return
-   
+
     arithmatic_operator = ArithmaticOperator(level, operation)
     score = arithmatic_operator.start()
     user_manager.update_score(level, operation, score)
     print(f"Your score is {user_manager.get_score(level, operation)}")
  
-        
+
 def show_score(user_manager):
     """ """
     score_list = [['Level', 'Add', 'Subtract', 'Multiply', 'Division']]
@@ -301,7 +304,8 @@ def show_score(user_manager):
             level_score_list.append(user_manager.get_score(level, operator))
         score_list.append(level_score_list)
     print("\n")
-    print(tabulate(score_list, headers = "firstrow", tablefmt = "orgtbl"))       
+    print(tabulate(score_list, headers = "firstrow", tablefmt = "orgtbl"))
+
 
 def user_options_menu(user_manager):
     """ 
@@ -318,7 +322,7 @@ def user_options_menu(user_manager):
         if user_options_menu_response == "1":
             start_game(user_manager)
         elif user_options_menu_response == "2":
-            show_score(user_manager)                           
+            show_score(user_manager)
         elif user_options_menu_response == "3":
             return
         else:
