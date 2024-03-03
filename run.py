@@ -295,8 +295,8 @@ def start_game(user_manager):
 
     arithmatic_operator = ArithmaticOperator(level, operation)
     score = arithmatic_operator.start()
-    user_manager.update_score(level, operation, score)
-    print(f"Your score is {user_manager.get_score(level, operation)}")
+    user_manager.update_score(level, operator, score)
+    print(f"Your current score is {score} and highest score is {user_manager.get_score(level, operator)}")
  
 
 def show_score(user_manager):
