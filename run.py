@@ -63,6 +63,11 @@ class ArithmaticOperator(NumberGenerator):
         for i in range(10):
             num1 = super().get_number()
             num2 = super().get_number()
+
+            if self.operator == "/":
+               while num2 == 0:
+                   num2 = super().get_number()
+
             user_response = self.__get_user_response(num1, num2, i+1)
             result = self.__is_answer_correct(num1, num2, user_response)
             if result == True:
