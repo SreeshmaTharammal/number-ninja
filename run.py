@@ -73,6 +73,88 @@ class ArithmaticOperator(NumberGenerator):
         return score 
 
 
+class UserManager:
+    """ """
+    def __init__(self):
+        self.__user_details = UserDetails()
+        self.__current_username = ''
+
+    def login(self):
+        """ 
+        Authorize the user by prompting the credentials. 
+        If username or password is wrong user will be prompted
+        maximum 3 times for the credentials. 
+        """
+        incorrect_credentials = "Username or password is incorrect."
+        
+        for i in range(3):
+            username = input("Enter username: ")
+            password = pwinput("Enter password: ")
+            if self.__user_details.is_valid_credential(username, password):     
+                self.__current_username = username
+                return True
+            print(incorrect_credentials)
+        print("Login attempt failed!\n\n")
+        return False
+        
+    def signup(self):
+        """ Sign-up option for new user. """
+        self.__show_username_constrains()
+        username = input("Enter username: ")
+        if not self.__is_valid_username(username):
+            self.__show_username_constrains()
+            return
+        
+        if self.__user_details.is_username_exist(username):
+            print("Username already exists. Please choose a different username.")
+            return
+        else:
+            self.__show_password_constrains()
+            password = pwinput("Enter password: ")        
+            if not self.__is_valid_password(password):
+                self.__show_password_constrains()
+                return        
+            print("User successfully registered.")
+
+    def get_score(self, level, operator):
+        """ """
+        return self.__user_details.get_score(self.__current_username, level, operator)
+
+    def update_score(self, level, operator, score):
+        """ """
+        self.__user_details.update_score(self.__current_username, level, operator, score)
+
+    def __is_valid_username(self, username):
+        """ Do password validation """
+        username_constrains = r"^[a-zA-Z][a-zA-Z0-9_]{3,11}$"
+        if not re.fullmatch(username_constrains, username):
+            return False
+        return True
+
+    def __show_username_constrains(self):
+        """ Show username constrains message """
+        username_constrains_msg = "Username must be 4 to 12 characters long.\n"\
+                "Username must start with an alphabet "\
+                "character.\nThe usename can contain alphabets, numbers "\
+                "or underscores."
+        print(f"\n{username_constrains_msg}")
+
+    def __is_valid_password(self, password):
+        """ Do password validation """
+        password_constrains = r"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)"\
+                r"(?=.*[!%&*])[A-Za-z\d!%&*]{6,12}"
+        if not re.fullmatch(password_constrains, password):
+            return False
+        return True
+
+    def __show_password_constrains(self):
+        """ Show password constrains message """
+        password_constrains_msg = "Password must be 6-12 characters long\n"\
+                "and include at least 1 lowercase letter, 1 uppercase letter,\n"\
+                    "1 number, and 1 special character (!, %, &, *)."
+        print(f"\n{password_constrains_msg}")
+
+
 class UserDetails:
     """ """
     score_cell_index_dict = {
@@ -140,76 +222,6 @@ class UserDetails:
         self.__update_user_records()
       
 
-def is_valid_username(username):
-    """ Do password validation """
-    username_constrains = r"^[a-zA-Z][a-zA-Z0-9_]{3,11}$"
-    if not re.fullmatch(username_constrains, username):
-        return False
-    return True
-
-def show_username_constrains():
-    """ Show username constrains message """
-    username_constrains_msg = "Username must be 4 to 12 characters long.\n"\
-            "Username must start with an alphabet "\
-            "character.\nThe usename can contain alphabets, numbers "\
-            "or underscores."
-    print(f"\n{username_constrains_msg}")
-
-
-def is_valid_password(password):
-    """ Do password validation """
-    password_constrains = r"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)"\
-            r"(?=.*[!%&*])[A-Za-z\d!%&*]{6,12}"
-    if not re.fullmatch(password_constrains, password):
-        return False
-    return True
-
-def show_password_constrains():
-    """ Show password constrains message """
-    password_constrains_msg = "Password must be 6-12 characters long\n"\
-            "and include at least 1 lowercase letter, 1 uppercase letter,\n"\
-                "1 number, and 1 special character (!, %, &, *)."
-    print(f"\n{password_constrains_msg}")
-
-
-def signup(user_details):
-    """ Sign-up option for new user. """
-    show_username_constrains()
-    username = input("Enter username: ")
-    if not is_valid_username(username):
-        show_username_constrains()
-        return
-    
-    if user_details.is_username_exist(username):
-        print("Username already exists. Please choose a different username.")
-        return
-    else:
-        show_password_constrains()
-        password = pwinput("Enter password: ")        
-        if not is_valid_password(password):
-            show_password_constrains()
-            return        
-        print("User successfully registered.")
-
-
-def login(user_details):
-    """ 
-    Authorize the user by prompting the credentials. 
-    If username or password is wrong user will be prompted
-    maximum 3 times for the credentials. 
-    """
-    incorrect_credentials = "Username or password is incorrect."
-    
-    for i in range(3):
-        username = input("Enter username: ")
-        password = pwinput("Enter password: ")
-        if user_details.is_valid_credential(username, password):        
-            return True
-        print(incorrect_credentials)
-    print("Login attempt failed!\n\n")
-    return False
-
-
 def operation_menu():
     """
     Displays the operation menu for the user to select arithmatic
@@ -263,7 +275,7 @@ def level_menu():
             print("Invalid action. Please enter 1 or 2 or 3 or 4")
 
 
-def start_game(user_details):
+def start_game(user_manager):
     """ Start the game by getting the level and operation. """
     level = level_menu()
     if level == "q":
@@ -275,22 +287,22 @@ def start_game(user_details):
    
     arithmatic_operator = ArithmaticOperator(level, operation)
     score = arithmatic_operator.start()
-    user_details.update_score('sree', level, operation, score)
+    user_manager.update_score(level, operation, score)
  
         
-def show_score(user_details):
+def show_score(user_manager):
     """ """
     score_list = [['Level', 'Add', 'Subtract', 'Multiply', 'Division']]
     for level in ['easy', 'medium', 'hard' ]:
         level_score_list = []
         level_score_list.append(level)
         for operator in ['+', '-', '*', '/']:
-            level_score_list.append(user_details.get_score('sree', level, operator))
+            level_score_list.append(user_manager.get_score(level, operator))
         score_list.append(level_score_list)
     print("\n")
     print(tabulate(score_list, headers = "firstrow", tablefmt = "orgtbl"))       
 
-def user_options_menu(user_details):
+def user_options_menu(user_manager):
     """ 
     Displays the user option menu which are Game, Show Score 
     and Quit. 
@@ -303,9 +315,9 @@ def user_options_menu(user_details):
 
         user_options_menu_response = input("Enter your option: ")
         if user_options_menu_response == "1":
-            start_game(user_details)
+            start_game(user_manager)
         elif user_options_menu_response == "2":
-            show_score(user_details)                           
+            show_score(user_manager)                           
         elif user_options_menu_response == "3":
             return
         else:
@@ -317,7 +329,7 @@ def main_menu():
     Displays the main menu options for the user to 
     create or login account in order to start the game. 
     """   
-    user_details = UserDetails()
+    user_manager = UserManager()
     while True:
         print("\n\nPlease select an option below.\n")
         print("1. Login")
@@ -326,10 +338,10 @@ def main_menu():
 
         main_menu_response = input("Enter your option: ")
         if main_menu_response == "1":
-            if login(user_details):
-                user_options_menu(user_details) 
+            if user_manager.login():
+                user_options_menu(user_manager) 
         elif main_menu_response == "2":
-            signup(user_details)    
+            user_manager.signup()    
         elif main_menu_response == "3":
             return
         else:
