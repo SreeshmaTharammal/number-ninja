@@ -126,8 +126,13 @@ class UserManager:
             if not self.__is_valid_password(password):
                 self.__show_password_constrains()
                 return
-            self.__user_details.add_user(username, password)
-            print("User successfully registered.")
+            else:
+                confirm_password = pwinput("Confirm your password: ")
+                if password != confirm_password:
+                    print("\nPassword doesn't match!")
+                    return
+                self.__user_details.add_user(username, password)
+                print("User successfully registered.")
 
     def get_score(self, level, operator):
         """ """
@@ -151,7 +156,7 @@ class UserManager:
 
     def __show_username_constrains(self):
         """ Show username constrains message """
-        print("\nInvalid username, username must:\n"
+        print("\nUsername must include:\n"
               "- At least 4 letters and maximum 12.\n"
               "- Starts with an alphabet.\n"
               "- Contains alphabets, numbers or underscores.\n"
@@ -167,7 +172,7 @@ class UserManager:
 
     def __show_password_constrains(self):
         """ Show password constrains message """
-        print("Invalid password, password must include:\n"
+        print("\nPassword must include:\n"
               "- At least 6 letters and maximum 12.\n"
               "- At least 1 lowercase letter.\n"
               "- At least 1 uppercase letter.\n"
@@ -250,7 +255,7 @@ class UserDetails:
         self.__update_user_records()
 
     def level_operator_str(self, level, operator):
-        return f"{level}_{operator}"
+        return f"{level}_{UserDetails.operator_converter_dict[operator]}"
 
     def __get_encryption_key(self):
         key_str = os.getenv("Encryption_key")
@@ -335,8 +340,8 @@ def start_game(user_manager):
     if operator == "q":
         return
 
-    print(f"\n\nStarting number game for the level \'{level}\' for the \
-          operator \'{UserDetails.operator_converter_dict[operator]}\'")
+    print(f"\n\nStarting number game for the level \'{level}\' for the\
+        operator \'{UserDetails.operator_converter_dict[operator]}\'")
     arithmatic_operator = ArithmaticOperator(level, operator)
     score = arithmatic_operator.start()
     user_manager.update_score(level, operator, score)
