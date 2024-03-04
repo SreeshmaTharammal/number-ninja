@@ -260,7 +260,6 @@ class UserDetails:
             key_str = f.readline()
         key_str_bytes = key_str.encode("utf-8")
         self.encryption_key = base64.urlsafe_b64encode(key_str_bytes.ljust(32)[:32])
-        print(self.encryption_key)
 
     def __encrypt_password(self, password):
         fernet = Fernet(self.encryption_key)
