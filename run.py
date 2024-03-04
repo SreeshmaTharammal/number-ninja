@@ -6,6 +6,7 @@ from pwinput import pwinput
 import random
 from tabulate import tabulate
 from cryptography.fernet import Fernet
+import base64
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -17,8 +18,6 @@ CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('number-ninja')
-PASSWORD_ENCRYPT_KEY = os.getenv("Encryption_key")
-print(PASSWORD_ENCRYPT_KEY)
 
 USER_RECORDS_WORKSHEET = SHEET.worksheet("user_records")
 
@@ -127,6 +126,7 @@ class UserManager:
             if not self.__is_valid_password(password):
                 self.__show_password_constrains()
                 return
+            self.__user_details.add_user(username, password)
             print("User successfully registered.")
 
     def get_score(self, level, operator):
@@ -175,7 +175,6 @@ class UserManager:
               "- At least 1 special character (!, %, &, *).\n"
               "- No spaces.")
 
-
 class UserDetails:
     """ """
     score_cell_index_dict = {
@@ -202,6 +201,7 @@ class UserDetails:
 
     def __init__(self):
         self.__update_user_records()
+        self.__get_encryption_key()
 
     def __update_user_records(self):
         """ Update user records and username """
@@ -216,13 +216,18 @@ class UserDetails:
         """ """
         if not self.is_username_exist(username):
             return False
-        if self.__user_records[username]['password'] == password:
+
+        decoded_password = self.__decrypt_password(
+            self.__user_records[username]['password']).decode("utf-8")
+        if decoded_password == password:
             return True
         return False
 
     def add_user(self, username, password):
         """ """
-        USER_RECORDS_WORKSHEET.append_row([username, password])
+        ciphertext = self.__encrypt_password(password).decode("utf-8")
+        USER_RECORDS_WORKSHEET.append_row([username, ciphertext,0,0,0,0,0,
+                                           0,0,0,0,0,0,0])
         self.__update_user_records()
 
     def get_score(self, username, level, operator):
@@ -246,6 +251,24 @@ class UserDetails:
 
     def level_operator_str(self, level, operator):
         return f"{level}_{operator}"
+
+    def __get_encryption_key(self):
+        key_str = os.getenv("Encryption_key")
+        if key_str == None:
+            f = open("encryption_key.txt", "r")
+            print("Reading from file...")
+            key_str = f.readline()
+        key_str_bytes = key_str.encode("utf-8")
+        self.encryption_key = base64.urlsafe_b64encode(key_str_bytes.ljust(32)[:32])
+        print(self.encryption_key)
+
+    def __encrypt_password(self, password):
+        fernet = Fernet(self.encryption_key)
+        return fernet.encrypt(password.encode("utf-8"))
+    
+    def __decrypt_password(self, ciphertext):
+        fernet = Fernet(self.encryption_key)
+        return fernet.decrypt(ciphertext)
 
 
 def operator_menu():
