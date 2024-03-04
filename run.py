@@ -183,18 +183,18 @@ class UserManager:
 class UserDetails:
     """ """
     score_cell_index_dict = {
-        "easy_+": 3,
-        "medium_+": 4,
-        "hard_+": 5,
-        "easy_-": 6,
-        "medium_-": 7,
-        "hard_-": 8,
-        "easy_*": 9,
-        "medium_*": 10,
-        "hard_*": 11,
-        "easy_/": 12,
-        "medium_/": 13,
-        "hard_/": 14
+        "easy_add": 3,
+        "medium_add": 4,
+        "hard_add": 5,
+        "easy_subtract": 6,
+        "medium_subtract": 7,
+        "hard_subtract": 8,
+        "easy_multiply": 9,
+        "medium_multiply": 10,
+        "hard_multiply": 11,
+        "easy_division": 12,
+        "medium_division": 13,
+        "hard_division": 14
     }
 
     operator_converter_dict = {
@@ -340,13 +340,13 @@ def start_game(user_manager):
     if operator == "q":
         return
 
-    print(f"\n\nStarting number game for the level \'{level}\' for the\
-        operator \'{UserDetails.operator_converter_dict[operator]}\'")
+    print(f"\n\nStarting number game for the level '{level}' for the "
+         f"operator '{UserDetails.operator_converter_dict[operator]}'")
     arithmatic_operator = ArithmaticOperator(level, operator)
     score = arithmatic_operator.start()
     user_manager.update_score(level, operator, score)
-    print(f"Your current score is {score} and highest score is \
-          {user_manager.get_score(level, operator)}")
+    print(f"Your current score is {score} and highest score is "
+          f"{user_manager.get_score(level, operator)}")
 
 
 def show_score(user_manager):
