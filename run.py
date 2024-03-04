@@ -5,6 +5,7 @@ import re
 from pwinput import pwinput
 import random
 from tabulate import tabulate
+from cryptography.fernet import Fernet
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -16,6 +17,8 @@ CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('number-ninja')
+PASSWORD_ENCRYPT_KEY = os.getenv("Encryption_key")
+print(PASSWORD_ENCRYPT_KEY)
 
 USER_RECORDS_WORKSHEET = SHEET.worksheet("user_records")
 
