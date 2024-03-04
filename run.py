@@ -385,6 +385,7 @@ def main_menu():
     Displays the main menu options for the user to
     create or login account in order to start the game.
     """
+    print("\nWelcome to Number Ninja Arithmatic Operator Game!\n")
     user_manager = UserManager()
     while True:
         print("\n\nPlease select an option below.\n")
