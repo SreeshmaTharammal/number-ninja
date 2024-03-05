@@ -93,7 +93,7 @@ class UserManager:
         If username or password is wrong user will be prompted
         maximum 3 times for the credentials.
         """
-        incorrect_credentials = "Username or password is incorrect."
+        incorrect_credentials = "Username or password is incorrect.\n"
 
         print("\n\nEnter username and password to login")
         for i in range(3):
@@ -103,6 +103,9 @@ class UserManager:
                 self.__current_username = username
                 return True
             print(incorrect_credentials)
+            if i < 2:
+                if not self.__is_login_retry_required():
+                    return False
         print("Login attempt failed!\n\n")
         return False
 
@@ -142,10 +145,26 @@ class UserManager:
 
     def update_score(self, level, operator, score):
         """ """
-        self.__user_details.update_score(self.__current_username,
-                                         level,
-                                         operator,
-                                         score)
+        self.__user_details.update_score(
+            self.__current_username,
+            level,
+            operator,
+            score
+        )
+
+    def __is_login_retry_required(self):
+        retry_info = """
+    Would you like to retry?
+    [Y]es or [N]o
+    """
+        while True:
+            print("Would you like to retry? ", end = "")
+            retry = input("Enter [Y]es or [N]o: ")
+            if retry == 'Y':
+                return True
+            elif retry == 'N':
+                return False
+            print("Invalid input. Enter either Y or N\n")
 
     def __is_valid_username(self, username):
         """ Do password validation """
