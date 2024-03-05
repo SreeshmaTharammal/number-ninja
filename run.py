@@ -370,8 +370,8 @@ def user_options_menu(user_manager):
     while True:
         print("\n\n******User Options******")
         print("Please select an option below.\n")
-        print("1. Number Game")
-        print("2. Show Score")
+        print("1. Start Number Game")
+        print("2. Show Your Score")
         print("3. Quit\n")
 
         user_options_menu_response = input("Enter your option: ")
