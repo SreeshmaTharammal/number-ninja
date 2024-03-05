@@ -45,7 +45,7 @@ class ArithmaticOperator(NumberGenerator):
 
     def __get_user_response(self, num1, num2, count):
         """ Return user response for the operator """
-        print(f"\n*********Question {count}*********\n")
+        print(f"\n*********Question {count}/10*********\n")
         print(f"{num1} {self.operator} {num2} = ?")
 
         while True:
