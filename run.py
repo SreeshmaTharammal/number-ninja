@@ -351,7 +351,7 @@ def start_game(user_manager):
 
 def show_score(user_manager):
     """ """
-    score_list = [['Level', 'Add', 'Subtract', 'Multiply', 'Division']]
+    score_list = [['Level', 'Add', 'Subtract', 'Multiply', 'Divide']]
     for level in ['easy', 'medium', 'hard']:
         level_score_list = []
         level_score_list.append(level)
