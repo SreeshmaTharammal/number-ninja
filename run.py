@@ -1,12 +1,12 @@
 import os
+import random
+import re
+import base64
 import gspread
 from google.oauth2.service_account import Credentials
-import re
 from pwinput import pwinput
-import random
 from tabulate import tabulate
 from cryptography.fernet import Fernet
-import base64
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
