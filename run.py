@@ -346,6 +346,7 @@ def level_menu():
     Easy, Medium or Hard or Quit
     """
     while True:
+        clear_screen()
         print("\n\n*******Game Level*******")
         print("Please select an option below.\n")
         print("1. Easy")
@@ -363,7 +364,7 @@ def level_menu():
         elif level_menu_response == "4":
             return "q"
         else:
-            print("Invalid action. Please enter 1 or 2 or 3 or 4")
+            print("Invalid input. Please enter 1 or 2 or 3 or 4")
 
 
 def start_game(user_manager):
@@ -402,6 +403,7 @@ def user_options_menu(user_manager):
     and Quit.
     """
     while True:
+        clear_screen()
         print("\n\n******User Options******")
         print("Please select an option below.\n")
         print("1. Start Number Game")
@@ -424,6 +426,7 @@ def main_menu():
     Displays the main menu options for the user to
     create or login account in order to start the game.
     """
+    clear_screen()
     print("\nWelcome to Number Ninja Arithmatic Operator Game!\n")
     user_manager = UserManager()
     while True:
@@ -440,6 +443,10 @@ def main_menu():
         else:
             print("Invalid action. Please enter 1 or 2 or 3")
 
+
+def clear_screen():
+    """ Clear the screen. """
+    os.system("clear")
 
 def main():
     """ Runs necessary functions at the start of the program. """
