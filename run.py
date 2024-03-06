@@ -7,6 +7,9 @@ from google.oauth2.service_account import Credentials
 from pwinput import pwinput
 from tabulate import tabulate
 from cryptography.fernet import Fernet
+from colorama import just_fix_windows_console
+from colorama import Fore, Back, Style
+import pyfiglet
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -44,8 +47,9 @@ class ArithmaticOperator(NumberGenerator):
         self.operator = operator
 
     def __get_user_response(self, num1, num2, count):
-        """ Return user response for the operator """
-        print(f"\n*********Question {count}/10*********\n")
+        """ Return user response for the operator """ 
+        print(f"{Fore.BLUE} \n********* Question {count}/10 *********\n")
+        print(Style.RESET_ALL)
         print(f"{num1} {self.operator} {num2} = ?")
 
         while True:
@@ -75,9 +79,11 @@ class ArithmaticOperator(NumberGenerator):
             result = self.__is_answer_correct(num1, num2, user_response)
             if result is True:
                 score += 1
-                print("\n***********Correct***********\n")
+                print(Fore.GREEN + "\n\n************ Correct ************\n")
+                print(Style.RESET_ALL)
             else:
-                print("\n***********Wrong***********\n")
+                print(Fore.RED + "\n\n************* Wrong *************\n")
+                print(Style.RESET_ALL)
         return score
 
 
@@ -137,7 +143,7 @@ class UserManager:
                 if password != confirm_password:
                     print("\nPassword doesn't match!")
                     return
-                self.__user_details.add_user(username, password)                
+                self.__user_details.add_user(username, password)
 
     def get_score(self, level, operator):
         """ """
@@ -456,6 +462,10 @@ def main_menu():
     create or login account in order to start the game.
     """
     clear_screen()
+    
+    ascii_art = pyfiglet.figlet_format("Number Ninja")
+    print(Fore.MAGENTA +ascii_art)
+    print(Style.RESET_ALL)
     print("\nWelcome to Number Ninja Arithmatic Operator Game!\n")
     user_manager = UserManager()
     main_menu_option = """
