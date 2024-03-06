@@ -229,7 +229,11 @@ class UserDetails:
 
     def __update_user_records(self):
         """ Update user records and username """
-        data = USER_RECORDS_WORKSHEET.get_all_records()
+        try:
+            data = USER_RECORDS_WORKSHEET.get_all_records()
+        except:
+            print("Something went wrong. Try again later")
+            raise
         self.__user_records = {record['username']: record for record in data}
 
     def is_username_exist(self, username):
@@ -250,9 +254,16 @@ class UserDetails:
     def add_user(self, username, password):
         """ """
         ciphertext = self.__encrypt_password(password).decode("utf-8")
-        USER_RECORDS_WORKSHEET.append_row([username, ciphertext,0,0,0,0,0,
-                                           0,0,0,0,0,0,0])
-        self.__update_user_records()
+        try:
+            print("saving data...")
+            USER_RECORDS_WORKSHEET.append_row([
+                username, ciphertext,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            ])
+            self.__update_user_records()
+            print("User registered successfully.")
+        except:
+            print("Unable to register user, try again later")
 
     def get_score(self, username, level, operator):
         """ """
@@ -263,15 +274,21 @@ class UserDetails:
         """ """
         if score <= self.get_score(username, level, operator):
             return
-        username_cell = USER_RECORDS_WORKSHEET.find(username)
+        try:
+            print("Saving score...")
+            username_cell = USER_RECORDS_WORKSHEET.find(username)
 
-        col_to_update = UserDetails.score_cell_index_dict[
-            self.level_operator_str(level, operator)]
-        cell_to_update = USER_RECORDS_WORKSHEET.cell(username_cell.row,
-                                                     col_to_update)
-        cell_to_update.value = score
-        USER_RECORDS_WORKSHEET.update_cells([cell_to_update])
-        self.__update_user_records()
+            col_to_update = UserDetails.score_cell_index_dict[
+                self.level_operator_str(level, operator)]
+            cell_to_update = USER_RECORDS_WORKSHEET.cell(username_cell.row,
+                                                        col_to_update)
+            cell_to_update.value = score
+            USER_RECORDS_WORKSHEET.update_cells([cell_to_update])
+            self.__update_user_records()
+            print(f"Your current score is {score} and highest score is "
+                f"{self.get_score(level, operator)}")
+        except:
+            print("Sorry! Failed to update the score.")
 
     def level_operator_str(self, level, operator):
         return f"{level}_{UserDetails.operator_converter_dict[operator]}"
@@ -364,8 +381,6 @@ def start_game(user_manager):
     arithmatic_operator = ArithmaticOperator(level, operator)
     score = arithmatic_operator.start()
     user_manager.update_score(level, operator, score)
-    print(f"Your current score is {score} and highest score is "
-          f"{user_manager.get_score(level, operator)}")
 
 
 def show_score(user_manager):
