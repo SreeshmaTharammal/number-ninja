@@ -12,7 +12,7 @@ SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",
     "https://www.googleapis.com/auth/drive"
-    ]
+]
 
 CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
@@ -121,8 +121,11 @@ class UserManager:
             return
 
         if self.__user_details.is_username_exist(username):
-            print("Username already exists. Please choose a \
-                  different username.")
+            print("""
+    Username already exists. Please choose a 
+    different username.
+    """
+            )
             return
         else:
             password = pwinput("Enter password: ")
@@ -134,14 +137,15 @@ class UserManager:
                 if password != confirm_password:
                     print("\nPassword doesn't match!")
                     return
-                self.__user_details.add_user(username, password)
-                print("User successfully registered.")
+                self.__user_details.add_user(username, password)                
 
     def get_score(self, level, operator):
         """ """
-        return self.__user_details.get_score(self.__current_username,
-                                             level,
-                                             operator)
+        return self.__user_details.get_score(
+            self.__current_username,
+            level,
+            operator
+        )
 
     def update_score(self, level, operator, score):
         """ """
@@ -175,11 +179,14 @@ class UserManager:
 
     def __show_username_constrains(self):
         """ Show username constrains message """
-        print("\nUsername must include:\n"
-              "- At least 4 letters and maximum 12.\n"
-              "- Starts with an alphabet.\n"
-              "- Contains alphabets, numbers or underscores.\n"
-              "- No spaces.")
+        username_info = """
+    Username must include:
+    - At least 4 letters and maximum 12.
+    - Starts with an alphabet.
+    - Contains alphabets, numbers or underscores.
+    - No spaces.
+    """
+        print(username_info)
 
     def __is_valid_password(self, password):
         """ Do password validation """
@@ -191,13 +198,16 @@ class UserManager:
 
     def __show_password_constrains(self):
         """ Show password constrains message """
-        print("\nPassword must include:\n"
-              "- At least 6 letters and maximum 12.\n"
-              "- At least 1 lowercase letter.\n"
-              "- At least 1 uppercase letter.\n"
-              "- At least 1 number.\n"
-              "- At least 1 special character (!, %, &, *).\n"
-              "- No spaces.")
+        password_info = """
+    Password must include:
+    - At least 6 letters and maximum 12.
+    - At least 1 lowercase letter.
+    - At least 1 uppercase letter.
+    - At least 1 number.
+    - At least 1 special character (!, %, &, *).
+    - No spaces.
+    """
+        print(password_info)
 
 class UserDetails:
     """ """
@@ -286,8 +296,8 @@ class UserDetails:
             USER_RECORDS_WORKSHEET.update_cells([cell_to_update])
             self.__update_user_records()
             print(f"Your current score is {score} and highest score is "
-                f"{self.get_score(level, operator)}")
-        except:
+                  f"{self.get_score(level, operator)}")
+        except Exception:
             print("Sorry! Failed to update the score.")
 
     def level_operator_str(self, level, operator):
@@ -295,12 +305,14 @@ class UserDetails:
 
     def __get_encryption_key(self):
         key_str = os.getenv("Encryption_key")
-        if key_str == None:
+        if key_str is None:
             f = open("encryption_key.txt", "r")
             print("Reading from file...")
             key_str = f.readline()
         key_str_bytes = key_str.encode("utf-8")
-        self.encryption_key = base64.urlsafe_b64encode(key_str_bytes.ljust(32)[:32])
+        self.encryption_key = base64.urlsafe_b64encode(
+            key_str_bytes.ljust(32)[:32]
+        )
 
     def __encrypt_password(self, password):
         fernet = Fernet(self.encryption_key)
@@ -316,18 +328,19 @@ def operator_menu():
     Displays the operator menu for the user to select arithmatic
     operators '+', '-' or '*' or '/'
     """
+    operator_selection = """
+
+*******Arithmatic Operator*******
+Please select an option below:
+1. Addition
+2. Subtration
+3. Multiplication
+4. Division
+5. Quit
+"""
     while True:
         clear_screen()
-        print(f"""
-              \n\n*******Arithmatic Operator*******
-              Please select an option below:
-              1. Addition
-              2. Subtration
-              3. Multiplication
-              4. Division
-              5. Quit
-              """
-        )
+        print(operator_selection)
 
         opertion_menu_response = input("Enter your option: ")
         if opertion_menu_response == "1":
@@ -351,12 +364,16 @@ def level_menu():
     """
     while True:
         clear_screen()
-        print("\n\n*******Game Level*******")
-        print("Please select an option below.\n")
-        print("1. Easy")
-        print("2. Medium")
-        print("3. Hard")
-        print("4. Quit\n")
+        game_level_selection = """
+
+*******Game Level*******"
+Please select an option below
+1. Easy
+2. Medium
+3. Hard
+4. Quit
+"""
+        print(game_level_selection)
 
         level_menu_response = input("Enter your option: ")
         if level_menu_response == "1":
@@ -402,7 +419,7 @@ def show_score(user_manager):
         score_list.append(level_score_list)
     print("\n")
     print(tabulate(score_list, headers="firstrow", tablefmt="orgtbl"))
-    input("Enter any key to continue.")
+    input("Press Enter to continue...")
 
 
 def user_options_menu(user_manager):
@@ -410,13 +427,17 @@ def user_options_menu(user_manager):
     Displays the user option menu which are Game, Show Score
     and Quit.
     """
+    user_options = """
+
+******User Options******
+Please select an option below
+1. Start Number Game
+2. Show Your Score
+3. Quit
+"""
     while True:
         clear_screen()
-        print("\n\n******User Options******")
-        print("Please select an option below.\n")
-        print("1. Start Number Game")
-        print("2. Show Your Score")
-        print("3. Quit\n")
+        print(user_options)
 
         user_options_menu_response = input("Enter your option: ")
         if user_options_menu_response == "1":
@@ -437,10 +458,14 @@ def main_menu():
     clear_screen()
     print("\nWelcome to Number Ninja Arithmatic Operator Game!\n")
     user_manager = UserManager()
+    main_menu_option = """
+
+Please select an option below
+1. Login
+2. Sign up
+"""
     while True:
-        print("\n\nPlease select an option below.\n")
-        print("1. Login")
-        print("2. Sign up")
+        print(main_menu_option)        
 
         main_menu_response = input("Enter your option: ")
         if main_menu_response == "1":
@@ -449,7 +474,7 @@ def main_menu():
         elif main_menu_response == "2":
             user_manager.signup()
         else:
-            print("Invalid action. Please enter 1 or 2 or 3")
+            print("Invalid input. Please enter 1 or 2")
 
 
 def clear_screen():
@@ -458,7 +483,9 @@ def clear_screen():
 
 def main():
     """ Runs necessary functions at the start of the program. """
+    just_fix_windows_console()
     main_menu()
 
 
-main()
+if __name__ == "__main__":
+    main()
