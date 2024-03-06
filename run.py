@@ -317,13 +317,17 @@ def operator_menu():
     operators '+', '-' or '*' or '/'
     """
     while True:
-        print("\n\n*******Arithmatic Operator*******")
-        print("Please select an option below.\n")
-        print("1. Addition")
-        print("2. Subtration")
-        print("3. Multiplication")
-        print("4. Division")
-        print("5. Quit\n")
+        clear_screen()
+        print(f"""
+              \n\n*******Arithmatic Operator*******
+              Please select an option below:
+              1. Addition
+              2. Subtration
+              3. Multiplication
+              4. Division
+              5. Quit
+              """
+        )
 
         opertion_menu_response = input("Enter your option: ")
         if opertion_menu_response == "1":
@@ -377,6 +381,7 @@ def start_game(user_manager):
     if operator == "q":
         return
 
+    clear_screen()
     print(f"\n\nStarting number game for the level '{level}' for the "
          f"operator '{UserDetails.operator_converter_dict[operator]}'")
     arithmatic_operator = ArithmaticOperator(level, operator)
@@ -386,6 +391,8 @@ def start_game(user_manager):
 
 def show_score(user_manager):
     """ """
+    clear_screen()
+    print("Your Score:")
     score_list = [['Level', 'Add', 'Subtract', 'Multiply', 'Divide']]
     for level in ['easy', 'medium', 'hard']:
         level_score_list = []
@@ -395,6 +402,7 @@ def show_score(user_manager):
         score_list.append(level_score_list)
     print("\n")
     print(tabulate(score_list, headers="firstrow", tablefmt="orgtbl"))
+    input("Enter any key to continue.")
 
 
 def user_options_menu(user_manager):
