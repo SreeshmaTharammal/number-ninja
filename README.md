@@ -183,13 +183,7 @@ Game level|After login, from 'User Options' menu select 'Start Number Game' by e
 |---|---|---|---|
 Operation selection|After selecting the game level, from 'Arithmatic Operator' menu select 'Addition' by entering '1' or 'Subtraction' by entering '2' or 'Multiplication' by entering '3' or 'Division' by entering '4'|Arithmatic operator menu is visible and required option can be selected. Once selected, question is visible for the required level and operator |Works as expected|
 
-![Level Menu](assets/readme-images/testing/game_level_menu.png)
+![Arithmatic Operator Menu](assets/readme-images/testing/arithmatic_operator_menu.png)
 
-5. See score after each operation game
 
-|Feature|Action|Expected result|Actual result|
-|---|---|---|---|
-Score for the game|After selecting the game level, from 'Arithmatic Operator' menu select 'Addition' by entering '1' or 'Subtraction' by entering '2' or 'Multiplication' by entering '3' or 'Division' by entering '4'|Arithmatic operator menu is visible and required option can be selected. Once selected, question is visible for the required level and operator |Works as expected|
-
-![Level Menu](assets/readme-images/testing/game_level_menu.png)
 #### As an owner I want the user to
