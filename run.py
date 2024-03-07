@@ -88,7 +88,7 @@ class ArithmaticOperator(NumberGenerator):
 
 
 class UserManager:
-    """ """
+    """ User Manager class """
     def __init__(self):
         self.__user_details = UserDetails()
         self.__current_username = ''
@@ -108,7 +108,8 @@ class UserManager:
             if self.__user_details.is_valid_credential(username, password):
                 self.__current_username = username
                 return True
-            print(incorrect_credentials)
+            print(Fore.RED + incorrect_credentials)
+            print(Style.RESET_ALL)
             if i < 2:
                 if not self.__is_login_retry_required():
                     return False
@@ -123,6 +124,7 @@ class UserManager:
 
         username = input("\n\nEnter username: ")
         if not self.__is_valid_username(username):
+            print("Invalid username")
             self.__show_username_constrains()
             return
 
@@ -136,6 +138,7 @@ class UserManager:
         else:
             password = pwinput("Enter password: ")
             if not self.__is_valid_password(password):
+                print("Invalid password")
                 self.__show_password_constrains()
                 return
             else:
@@ -146,7 +149,7 @@ class UserManager:
                 self.__user_details.add_user(username, password)
 
     def get_score(self, level, operator):
-        """ """
+        """ Return score """
         return self.__user_details.get_score(
             self.__current_username,
             level,
@@ -154,7 +157,7 @@ class UserManager:
         )
 
     def update_score(self, level, operator, score):
-        """ """
+        """ Update score """
         self.__user_details.update_score(
             self.__current_username,
             level,
@@ -163,23 +166,28 @@ class UserManager:
         )
 
     def __is_login_retry_required(self):
-        retry_info = """
-    Would you like to retry?
-    [Y]es or [N]o
-    """
+        """ """
         while True:
-            print("Would you like to retry? ", end = "")
-            retry = input("Enter [Y]es or [N]o: ")
+            print("""
+Would you like to retry?
+Make sure you enter uppercase lettter [Y/N]
+""")
+            retry = input("Enter [Y/N]:")
             if retry == 'Y':
                 return True
             elif retry == 'N':
                 return False
-            print("Invalid input. Enter either Y or N\n")
+            clear_screen()
+            print(Fore.RED +"Invalid input. Enter either Y or N\n")
+            print(Style.RESET_ALL)
 
     def __is_valid_username(self, username):
         """ Do password validation """
         username_constrains = r"^[a-zA-Z][a-zA-Z0-9_]{3,11}$"
-        if not re.fullmatch(username_constrains, username):
+        if not re.fullmatch(
+            username_constrains, 
+            username
+        ):
             return False
         return True
 
@@ -198,7 +206,10 @@ class UserManager:
         """ Do password validation """
         password_constrains = r"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)"\
                               r"(?=.*[!%&*])[A-Za-z\d!%&*]{6,12}"
-        if not re.fullmatch(password_constrains, password):
+        if not re.fullmatch(
+            password_constrains, 
+            password
+        ):
             return False
         return True
 
@@ -216,7 +227,7 @@ class UserManager:
         print(password_info)
 
 class UserDetails:
-    """ """
+    """ User details calss """
     score_cell_index_dict = {
         "easy_add": 3,
         "medium_add": 4,
@@ -253,11 +264,11 @@ class UserDetails:
         self.__user_records = {record['username']: record for record in data}
 
     def is_username_exist(self, username):
-        """ """
+        """ Check username exist or not """
         return username in self.__user_records
 
     def is_valid_credential(self, username, password):
-        """ """
+        """ Check the credentials """
         if not self.is_username_exist(username):
             return False
 
@@ -268,7 +279,7 @@ class UserDetails:
         return False
 
     def add_user(self, username, password):
-        """ """
+        """ Add user details to worksheet """
         ciphertext = self.__encrypt_password(password).decode("utf-8")
         try:
             print("saving data...")
@@ -282,12 +293,12 @@ class UserDetails:
             print("Unable to register user, try again later")
 
     def get_score(self, username, level, operator):
-        """ """
+        """ return score """
         return self.__user_records[username][self.level_operator_str(level,
                                                                      operator)]
 
     def update_score(self, username, level, operator, score):
-        """ """
+        """ Update the score """
         if score <= self.get_score(username, level, operator):
             return
         try:
@@ -301,8 +312,7 @@ class UserDetails:
             cell_to_update.value = score
             USER_RECORDS_WORKSHEET.update_cells([cell_to_update])
             self.__update_user_records()
-            print(f"Your current score is {score} and highest score is "
-                  f"{self.get_score(level, operator)}")
+            print("Score updated successfully")
         except Exception:
             print("Sorry! Failed to update the score.")
 
@@ -328,6 +338,8 @@ class UserDetails:
         fernet = Fernet(self.encryption_key)
         return fernet.decrypt(ciphertext)
 
+def wait_user_input():
+    input("Press Enter to continue...")
 
 def operator_menu():
     """
@@ -411,9 +423,14 @@ def start_game(user_manager):
     score = arithmatic_operator.start()
     user_manager.update_score(level, operator, score)
 
+    print(f"Your current score is {score} and highest score is "
+            f"{user_manager.get_score(level, operator)}")
+
+    wait_user_input()
+
 
 def show_score(user_manager):
-    """ """
+    """ Show score """
     clear_screen()
     print("Your Score:")
     score_list = [['Level', 'Add', 'Subtract', 'Multiply', 'Divide']]
@@ -425,7 +442,7 @@ def show_score(user_manager):
         score_list.append(level_score_list)
     print("\n")
     print(tabulate(score_list, headers="firstrow", tablefmt="orgtbl"))
-    input("Press Enter to continue...")
+    wait_user_input()
 
 
 def user_options_menu(user_manager):
@@ -435,7 +452,8 @@ def user_options_menu(user_manager):
     """
     user_options = """
 
-******User Options******
+****** User Options ******
+
 Please select an option below
 1. Start Number Game
 2. Show Your Score
@@ -463,8 +481,8 @@ def main_menu():
     """
     clear_screen()
     
-    ascii_art = pyfiglet.figlet_format("Number Ninja")
-    print(Fore.MAGENTA +ascii_art)
+    ascii_art = pyfiglet.figlet_format("Number Ninja", font="slant")
+    print(Fore.YELLOW +ascii_art)
     print(Style.RESET_ALL)
     print("\nWelcome to Number Ninja Arithmatic Operator Game!\n")
     user_manager = UserManager()
@@ -473,9 +491,12 @@ def main_menu():
 Please select an option below
 1. Login
 2. Sign up
+3. Instructions
 """
     while True:
-        print(main_menu_option)        
+        clear_screen()
+
+        print(main_menu_option)
 
         main_menu_response = input("Enter your option: ")
         if main_menu_response == "1":
@@ -483,9 +504,26 @@ Please select an option below
                 user_options_menu(user_manager)
         elif main_menu_response == "2":
             user_manager.signup()
+        elif main_menu_response == "3":
+            show_instruction_menu()
         else:
             print("Invalid input. Please enter 1 or 2")
 
+
+def show_instruction_menu():
+    print("""
+
+1. User account is required to start the game. If user account not
+created, use sign up option from main menu to create one.
+2. Use Login option from main menu to login to the application
+3. Once login, user will presented with options to start game
+or show score. 
+4. Start game option can be used to select the game 
+and required arithmatic oprator to play the game
+5. Show score option can be used show the score for the user
+6. User will be preseted with 10 games for the selected level 
+and operator when select game is selected.
+""")
 
 def clear_screen():
     """ Clear the screen. """
