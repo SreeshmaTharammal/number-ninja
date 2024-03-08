@@ -7,8 +7,7 @@ from google.oauth2.service_account import Credentials
 from pwinput import pwinput
 from tabulate import tabulate
 from cryptography.fernet import Fernet
-from colorama import just_fix_windows_console
-from colorama import Fore, Back, Style
+from colorama import just_fix_windows_console, Fore, Style
 import pyfiglet
 
 SCOPE = [
@@ -482,7 +481,7 @@ def main_menu():
     clear_screen()
     
     ascii_art = pyfiglet.figlet_format("Number Ninja", font="slant")
-    print(Fore.YELLOW +ascii_art)
+    print(Fore.YELLOW + ascii_art)
     print(Style.RESET_ALL)
     print("\nWelcome to Number Ninja Arithmatic Operator Game!\n")
     user_manager = UserManager()
@@ -494,8 +493,6 @@ Please select an option below
 3. Instructions
 """
     while True:
-        clear_screen()
-
         print(main_menu_option)
 
         main_menu_response = input("Enter your option: ")
@@ -507,7 +504,10 @@ Please select an option below
         elif main_menu_response == "3":
             show_instruction_menu()
         else:
-            print("Invalid input. Please enter 1 or 2")
+            clear_screen()
+            print("Invalid input. Please enter 1 or 2 or 3")
+            continue
+        clear_screen()
 
 
 def show_instruction_menu():
