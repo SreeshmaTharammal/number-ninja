@@ -2,6 +2,7 @@ import os
 import random
 import re
 import base64
+import time
 import gspread
 from google.oauth2.service_account import Credentials
 from pwinput import pwinput
@@ -47,8 +48,7 @@ class ArithmaticOperator(NumberGenerator):
 
     def __get_user_response(self, num1, num2, count):
         """ Return user response for the operator """ 
-        print(f"{Fore.BLUE} \n********* Question {count}/10 *********\n")
-        print(Style.RESET_ALL)
+        color_print(Fore.BLUE, f"\n********* Question {count}/10 *********\n")
         print(f"{num1} {self.operator} {num2} = ?")
 
         while True:
@@ -78,11 +78,15 @@ class ArithmaticOperator(NumberGenerator):
             result = self.__is_answer_correct(num1, num2, user_response)
             if result is True:
                 score += 1
-                print(Fore.GREEN + "\n\n************ Correct ************\n")
-                print(Style.RESET_ALL)
+                color_print(
+                    Fore.GREEN, 
+                    "\n\n************ Correct ************\n"
+                    )
             else:
-                print(Fore.RED + "\n\n************* Wrong *************\n")
-                print(Style.RESET_ALL)
+                color_print(
+                    Fore.RED, 
+                    "\n\n************* Wrong *************\n"
+                    )
         return score
 
 
@@ -98,54 +102,69 @@ class UserManager:
         If username or password is wrong user will be prompted
         maximum 3 times for the credentials.
         """
+        clear_screen()
         incorrect_credentials = "Username or password is incorrect.\n"
 
-        print("\n\nEnter username and password to login")
         for i in range(3):
+            print("\n\nEnter username and password to login")
+
             username = input("Enter username: ")
             password = pwinput("Enter password: ")
             if self.__user_details.is_valid_credential(username, password):
                 self.__current_username = username
                 return True
-            clear_screen()
+
             print(Fore.RED + incorrect_credentials)
             print(Style.RESET_ALL, end = "")
+            time.sleep(2)
             if i < 2:
+                clear_screen()
                 if not self.__is_login_retry_required():
-                    clear_screen()
-                    return False
-        print("Login attempt failed!\n\n")
+                    break
+
+            clear_screen()
+
+        print(Fore.RED + "Login attempt failed!\n\n")
+        print(Style.RESET_ALL, end = "")
+        time.sleep(2)
         return False
 
     def signup(self):
         """ Sign-up option for new user. """
+        clear_screen()
+
         print("\n\nEnter user name and password to sign up")
         self.__show_username_constrains()
         self.__show_password_constrains()
 
         username = input("\n\nEnter username: ")
         if not self.__is_valid_username(username):
-            print("Invalid username")
+            show_error_msg_with_timeout("Invalid username")
+
             self.__show_username_constrains()
+            time.sleep(2)
             return
 
         if self.__user_details.is_username_exist(username):
-            print("""
-    Username already exists. Please choose a 
-    different username.
-    """
-            )
+            show_error_msg_with_timeout("""
+Username already exists. Please choose a 
+different username.
+"""
+)
+            time.sleep(2)
             return
         else:
             password = pwinput("Enter password: ")
             if not self.__is_valid_password(password):
-                print("Invalid password")
+                color_print(Fore.RED, "Invalid password")
+
                 self.__show_password_constrains()
+                time.sleep(2)
                 return
             else:
                 confirm_password = pwinput("Confirm your password: ")
                 if password != confirm_password:
-                    print("\nPassword doesn't match!")
+                    show_error_msg_with_timeout("\nPassword doesn't match!")
                     return
                 self.__user_details.add_user(username, password)
 
@@ -178,9 +197,9 @@ Make sure you enter uppercase lettter [Y/N]
                 return True
             elif retry == 'N':
                 return False
+
+            show_error_msg_with_timeout("Invalid input. Enter either Y or N\n")
             clear_screen()
-            print(Fore.RED +"Invalid input. Enter either Y or N\n")
-            print(Style.RESET_ALL)
 
     def __is_valid_username(self, username):
         """ Do password validation """
@@ -289,9 +308,10 @@ class UserDetails:
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
             ])
             self.__update_user_records()
-            print("User registered successfully.")
+            color_print(Fore.GREEN, "User registered successfully.")
         except:
-            print("Unable to register user, try again later")
+            show_error_msg_with_timeout("Unable to register user, \
+                                        try again later")
 
     def get_score(self, username, level, operator):
         """ return score """
@@ -374,7 +394,7 @@ Please select an option below:
         elif opertion_menu_response == "5":
             return 'q'
         else:
-            print("Invalid action. Please enter 1 or 2 or 3 or 4 or 5")
+            show_error_msg_with_timeout("Invalid input. Please enter 1 or 2 or 3 or 4 or 5")
 
 
 def level_menu():
@@ -406,7 +426,7 @@ Please select an option below
         elif level_menu_response == "4":
             return "q"
         else:
-            print("Invalid input. Please enter 1 or 2 or 3 or 4")
+            show_error_msg_with_timeout("Invalid input. Please enter 1 or 2 or 3 or 4")
 
 
 def start_game(user_manager):
@@ -426,9 +446,8 @@ def start_game(user_manager):
     score = arithmatic_operator.start()
     user_manager.update_score(level, operator, score)
 
-    print(Fore.GREEN + f"Your current score is {score} and highest score is "
+    color_print(Fore.GREEN, f"Your current score is {score} and highest score is "
             f"{user_manager.get_score(level, operator)}")
-    print(Style.RESET_ALL)
 
     wait_user_input()
 
@@ -445,11 +464,11 @@ def show_score(user_manager):
             level_score_list.append(user_manager.get_score(level, operator))
         score_list.append(level_score_list)
     print("\n")
-    print(Fore.LIGHTCYAN_EX + tabulate(score_list,
+    color_print(Fore.LIGHTCYAN_EX, tabulate(score_list,
                               headers="firstrow",
                               tablefmt="orgtbl"
     ))
-    print(Style.RESET_ALL)
+
     wait_user_input()
 
 
@@ -479,7 +498,7 @@ Please select an option below
         elif user_options_menu_response == "3":
             return
         else:
-            print("Invalid action. Please enter 1 or 2 or 3")
+            show_error_msg_with_timeout("Invalid input. Please enter 1 or 2 or 3")
 
 
 def main_menu():
@@ -490,8 +509,8 @@ def main_menu():
     clear_screen()
     
     ascii_art = pyfiglet.figlet_format("Number Ninja", font="slant")
-    print(Fore.YELLOW + ascii_art)
-    print(Style.RESET_ALL)
+    color_print(Fore.YELLOW, ascii_art)
+
     print("\nWelcome to Number Ninja Arithmatic Operator Game!\n")
     user_manager = UserManager()
     main_menu_option = """
@@ -513,15 +532,13 @@ Please select an option below
         elif main_menu_response == "3":
             show_instruction_menu()
         else:
-            clear_screen()
-            print("Invalid input. Please enter 1 or 2 or 3")
-            continue
+            show_error_msg_with_timeout("Invalid input. Please enter 1 or 2 or 3")
         clear_screen()
 
 
 def show_instruction_menu():
     clear_screen()
-    print(Fore.LIGHTCYAN_EX + """
+    color_print(Fore.LIGHTCYAN_EX, """
 ************************** Instructions *************************
           
 1. User account is required to start the game. If user account not
@@ -534,8 +551,17 @@ def show_instruction_menu():
 5. Show score option can be used show the score for the user.
 6. User will be presented with 10 games for the selected level 
    and operator when select game is selected.
+7. For division interger part of quotient is considered as correct.
+For example, For the question 9/2, correct answer is 4.
+8. For level easy, two random number between 0 and 9 will be used to
+generate question
+9. For level medium, two random number between 0 and 99 will be used to
+generate question
+10. For level hard, two random number between 0 and 9999 will be used to
+generate question
+11. From any level in the game, can use option 'Quit' to go back to 
+previous level.
 """)
-    print(Style.RESET_ALL)
     wait_user_input()
 
 
@@ -543,6 +569,15 @@ def clear_screen():
     """ Clear the screen. """
     os.system("clear")
 
+
+def color_print(color, message):
+    print(color, message)
+    print(Style.RESET_ALL)
+
+
+def show_error_msg_with_timeout(msg):
+    color_print(Fore.RED, msg)
+    time.sleep(2)
 
 def main():
     """ Runs necessary functions at the start of the program. """
