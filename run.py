@@ -107,10 +107,12 @@ class UserManager:
             if self.__user_details.is_valid_credential(username, password):
                 self.__current_username = username
                 return True
+            clear_screen()
             print(Fore.RED + incorrect_credentials)
-            print(Style.RESET_ALL)
+            print(Style.RESET_ALL, end = "")
             if i < 2:
                 if not self.__is_login_retry_required():
+                    clear_screen()
                     return False
         print("Login attempt failed!\n\n")
         return False
@@ -348,6 +350,7 @@ def operator_menu():
     operator_selection = """
 
 *******Arithmatic Operator*******
+
 Please select an option below:
 1. Addition
 2. Subtration
@@ -384,6 +387,7 @@ def level_menu():
         game_level_selection = """
 
 *******Game Level*******"
+
 Please select an option below
 1. Easy
 2. Medium
@@ -422,8 +426,9 @@ def start_game(user_manager):
     score = arithmatic_operator.start()
     user_manager.update_score(level, operator, score)
 
-    print(f"Your current score is {score} and highest score is "
+    print(Fore.GREEN + f"Your current score is {score} and highest score is "
             f"{user_manager.get_score(level, operator)}")
+    print(Style.RESET_ALL)
 
     wait_user_input()
 
@@ -440,7 +445,11 @@ def show_score(user_manager):
             level_score_list.append(user_manager.get_score(level, operator))
         score_list.append(level_score_list)
     print("\n")
-    print(tabulate(score_list, headers="firstrow", tablefmt="orgtbl"))
+    print(Fore.LIGHTCYAN_EX + tabulate(score_list,
+                              headers="firstrow",
+                              tablefmt="orgtbl"
+    ))
+    print(Style.RESET_ALL)
     wait_user_input()
 
 
@@ -511,23 +520,29 @@ Please select an option below
 
 
 def show_instruction_menu():
-    print("""
-
+    clear_screen()
+    print(Fore.LIGHTCYAN_EX + """
+************************** Instructions *************************
+          
 1. User account is required to start the game. If user account not
-created, use sign up option from main menu to create one.
-2. Use Login option from main menu to login to the application
+   created, use sign up option from main menu to create one.
+2. Use Login option from main menu to login to the application.
 3. Once login, user will presented with options to start game
-or show score. 
+   or show score. 
 4. Start game option can be used to select the game 
-and required arithmatic oprator to play the game
-5. Show score option can be used show the score for the user
-6. User will be preseted with 10 games for the selected level 
-and operator when select game is selected.
+   and required arithmatic oprator to play the game.
+5. Show score option can be used show the score for the user.
+6. User will be presented with 10 games for the selected level 
+   and operator when select game is selected.
 """)
+    print(Style.RESET_ALL)
+    wait_user_input()
+
 
 def clear_screen():
     """ Clear the screen. """
     os.system("clear")
+
 
 def main():
     """ Runs necessary functions at the start of the program. """
