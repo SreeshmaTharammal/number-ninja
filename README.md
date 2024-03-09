@@ -8,9 +8,9 @@ View the live site [here](https://number-ninja-3ab6f688eeb0.herokuapp.com/).
 ## Project Goals
 
 ### User Goals
-- Allow user to sigup and login
+- Allow user to signup and login
 - User should be able to login from diffrent machines.
-- Play arithmatic opertors gmae with addition, subtraction, multiplication and division are supported.
+- Play arithmatic opertors game with addition, subtraction, multiplication and division are supported.
 - Levels easy, medium and hard are supported
 - User should be able to see the score.
 
@@ -86,7 +86,7 @@ The data for the application including user name, password and scrore for every 
 
 #### User options menu
 - The user options is displayed when user login succesfully.
-- This presets user with options for:
+- This presents user with options for:
     - Number game, which allows user to start the game
     - Shows score, which allows user to show score for all operators and levels
     - Quit, which allows user to quit user option menu and back to main menu
@@ -95,7 +95,7 @@ The data for the application including user name, password and scrore for every 
 #### Number Game
 ##### Level Menu
 - The Level menu is disaplayed when user selects number game options from user options menu
-- This presets user with options for:
+- This presents user with options for:
     - Level Easy, where number ranges from 0 to 9
     - Level Medium, where number ranges from 0 to 99
     - Level Hard, where mumber ranges from 0 to 9999
@@ -104,44 +104,44 @@ The data for the application including user name, password and scrore for every 
 
 ##### Arithmatic Operator Menu
 - The arithmatic operator menu is disaplayed once user selected the level for the game as either easy or medium or hard
-- This presets user with options for:
-    - Addition, where user will be preseted with two numbers to add
-    - Subtration, where user will be preseted with two numbers to subtract
-    - Multiplication, where user will be preseted with two numbers to multiply
-    - Division, where user will be preseted with two numbers to divide
+- This presents user with options for:
+    - Addition, where user will be presented with two numbers to add
+    - Subtration, where user will be presented with two numbers to subtract
+    - Multiplication, where user will be presented with two numbers to multiply
+    - Division, where user will be presented with two numbers to divide
     - Quit, where user can exit to user options menu
 ![Arithmatic Operator menu](assets/readme-images/game_arithmatic_operator_menu.png)
 
 ##### Game start Menu
-- Game start menu is disaplyed once user selected operator as wither addition, subtraction, multiplcation or division
-- This will prset user questions with random number for the range selected by the user.
+- Game start menu is disaplyed once user selected operator as either addition, subtraction, multiplcation or division
+- This will present user questions with random number for the range selected by the user.
 - Once user entered the answer, correcteness of the anwer will be displayed.
-- User will be preseted with 10 questions
+- User will be presented with 10 questions
 - For division interger part of quotient is considered as correct answer. For example, for the question 9/2, correct answer is 4.
 - Overall score of the game will be displayed after anwering all 10 questions.
 ![Game start menu](assets/readme-images/game_start_menu.png)
 
 #### Show Score Menu
-- This menu will be preseted when user selects show score option from user options menu
-- This presets user highest score for every level and every operator in a tabular form
+- This menu will be presented when user selects show score option from user options menu
+- This presents user highest score for every level and every operator in a tabular form
 ![Show Score menu](assets/readme-images/show_score_menu.png)
 
 #### Feedback for invalid user name for sign up
-- If user name entered is not valid, user will be preseted with invalid username menu
+- If user name entered is not valid, user will be presented with invalid username menu
 ![Invalid Username menu](assets/readme-images/invalid_username_menu.png)
 
 #### Feedback for invalid password for sign up
-- If password entered is not valid, user will be preseted with invalid password menu
+- If password entered is not valid, user will be presented with invalid password menu
 ![Invalid Password menu](assets/readme-images/invalid_password_menu.png)
 
 #### Feedback for invalid credentials for login
-- If username or password does not match, user will be preseted with invalid credentials menu.
+- If username or password does not match, user will be presented with invalid credentials menu.
 - User will be presented 3 times to retry.
-- User can chose whether they want to retry or not. 
-- User will be preseted with invalid crentials message and timeout for 2 seconds before showing the retry screen
+- User can choose whether they want to retry or not. 
+- User will be presented with invalid crentials message and timeout for 2 seconds before showing the retry screen
 
 ### Technologies Used
-- [draw.IO](https://app.diagrams.net/)
+
 ### Languages:
 
 - [Python 3.8.5](https://www.python.org/downloads/release/python-385/): used to anchor the project and direct all application behavior
@@ -284,6 +284,17 @@ Number range for level hard|From 'Level Menu' select level as 'hard'. From 'Arit
 |Feature|Action|Expected result|Actual result|
 |---|---|---|---|
 Limit number of question|From 'Level Menu' select required level. From 'Arithmatic Operator' menu select 'Addition' or 'Subtraction' or 'Multiplication' or 'Division' as operator. Enter answeres for every questions presented|Maximum 10 questions are presented to user |Works as expected|
+
+### Development Bugs
+
+During development, manual testing was carried out for each feature. A few problems were found and resolved.
+The problems encountered during development are shown below.
+- Clear screen was not working  at every level
+    - Clear screen was missing at some edge cases
+- Password was written as plain text in data storage
+    - Added encryption to password
+- Color was reset at some places
+    - Added function color_print and reset color in order to avoid issues.
 
 ## Deployment and Development
 
