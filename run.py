@@ -47,7 +47,7 @@ class ArithmaticOperator(NumberGenerator):
         self.operator = operator
 
     def __get_user_response(self, num1, num2, count):
-        """ Return user response for the operator """ 
+        """ Shows the question to user and returns the user response. """
         color_print(Fore.BLUE, f"\n********* Question {count}/10 *********\n")
         print(f"{num1} {self.operator} {num2} = ?")
 
@@ -58,6 +58,10 @@ class ArithmaticOperator(NumberGenerator):
                 print("Enter a valid response\n")
 
     def __is_answer_correct(self, num1, num2, user_response):
+        """
+        Evalutes the arithmatic operator aginst the user response and returns
+        True if correct and False otherwise
+        """
         expression = f"{num1} {self.operator} {num2}"
         result = eval(expression)
         if int(result) == user_response:
@@ -65,6 +69,13 @@ class ArithmaticOperator(NumberGenerator):
         return False
 
     def start(self):
+        """
+        This function starts the arithmatic game and shows 10 questions and
+        prompts user to enter the answer. User response is validated against
+        the correct answer. If answer is correct, score is incremented by 1 and
+        message will be shown to user. Otherwise wrong message will be shown
+        to user.
+        """
         score = 0
         for i in range(10):
             num1 = super().get_number()
@@ -79,12 +90,12 @@ class ArithmaticOperator(NumberGenerator):
             if result is True:
                 score += 1
                 color_print(
-                    Fore.GREEN, 
+                    Fore.GREEN,
                     "\n\n************ Correct ************\n"
                     )
             else:
                 color_print(
-                    Fore.RED, 
+                    Fore.RED,
                     "\n\n************* Wrong *************\n"
                     )
         return score
@@ -114,9 +125,7 @@ class UserManager:
                 self.__current_username = username
                 return True
 
-            print(Fore.RED + incorrect_credentials)
-            print(Style.RESET_ALL, end = "")
-            time.sleep(2)
+            show_error_msg_with_timeout(incorrect_credentials)
             if i < 2:
                 clear_screen()
                 if not self.__is_login_retry_required():
@@ -124,41 +133,41 @@ class UserManager:
 
             clear_screen()
 
-        print(Fore.RED + "Login attempt failed!\n\n")
-        print(Style.RESET_ALL, end = "")
-        time.sleep(2)
+        show_error_msg_with_timeout("Login attempt failed!\n\n")
         return False
 
     def signup(self):
-        """ Sign-up option for new user. """
+        """
+        This function helps to create user account using username and
+        password. Password and username are validated against the policy.
+        If user entered user name and passwords satisfies the policy, new
+        user is added to the data storage.
+        """
         clear_screen()
 
         print("\n\nEnter user name and password to sign up")
-        self.__show_username_constrains()
-        self.__show_password_constrains()
+        self.__show_username_policy()
+        self.__show_password_policy()
 
         username = input("\n\nEnter username: ")
         if not self.__is_valid_username(username):
-            show_error_msg_with_timeout("Invalid username")
+            color_print(Fore.RED, "Invalid username")
 
-            self.__show_username_constrains()
+            self.__show_username_policy()
             time.sleep(2)
             return
 
         if self.__user_details.is_username_exist(username):
             show_error_msg_with_timeout("""
-Username already exists. Please choose a 
-different username.
-"""
-)
-            time.sleep(2)
+Username already exists. Please choose a different username.
+""")
             return
         else:
             password = pwinput("Enter password: ")
             if not self.__is_valid_password(password):
                 color_print(Fore.RED, "Invalid password")
 
-                self.__show_password_constrains()
+                self.__show_password_policy()
                 time.sleep(2)
                 return
             else:
@@ -169,7 +178,9 @@ different username.
                 self.__user_details.add_user(username, password)
 
     def get_score(self, level, operator):
-        """ Return score """
+        """
+        Invokes user details to return the score of the current log in user.
+        """
         return self.__user_details.get_score(
             self.__current_username,
             level,
@@ -177,7 +188,10 @@ different username.
         )
 
     def update_score(self, level, operator, score):
-        """ Update score """
+        """
+        Invokes user details update scrore using the current log in
+        user name.
+        """
         self.__user_details.update_score(
             self.__current_username,
             level,
@@ -186,7 +200,12 @@ different username.
         )
 
     def __is_login_retry_required(self):
-        """ """
+        """
+        Checks a retry for login is required or not. If user enters 'Y'
+        then returns True and if user selected 'N' returns false. For any
+        other input, invalid input message will be shown and retry message
+        will be shown again.
+        """
         while True:
             print("""
 Would you like to retry?
@@ -202,17 +221,17 @@ Make sure you enter uppercase lettter [Y/N]
             clear_screen()
 
     def __is_valid_username(self, username):
-        """ Do password validation """
+        """ Validates username meets the policy requirments """
         username_constrains = r"^[a-zA-Z][a-zA-Z0-9_]{3,11}$"
         if not re.fullmatch(
-            username_constrains, 
+            username_constrains,
             username
         ):
             return False
         return True
 
-    def __show_username_constrains(self):
-        """ Show username constrains message """
+    def __show_username_policy(self):
+        """ Show username policy message """
         username_info = """
     Username must include:
     - At least 4 letters and maximum 12.
@@ -223,18 +242,18 @@ Make sure you enter uppercase lettter [Y/N]
         print(username_info)
 
     def __is_valid_password(self, password):
-        """ Do password validation """
-        password_constrains = r"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)"\
-                              r"(?=.*[!%&*])[A-Za-z\d!%&*]{6,12}"
+        """ Validates password meets the policy requirments """
+        password_regex = r"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)"\
+                         r"(?=.*[!%&*])[A-Za-z\d!%&*]{6,12}"
         if not re.fullmatch(
-            password_constrains, 
+            password_regex,
             password
         ):
             return False
         return True
 
-    def __show_password_constrains(self):
-        """ Show password constrains message """
+    def __show_password_policy(self):
+        """ Shows password policy message """
         password_info = """
     Password must include:
     - At least 6 letters and maximum 12.
@@ -246,8 +265,11 @@ Make sure you enter uppercase lettter [Y/N]
     """
         print(password_info)
 
+
 class UserDetails:
-    """ User details calss """
+    """ User details class """
+
+    # To get worksheet cell index corresponding to level and operator
     score_cell_index_dict = {
         "easy_add": 3,
         "medium_add": 4,
@@ -263,6 +285,7 @@ class UserDetails:
         "hard_division": 14
     }
 
+    # To get operator name from the operator symbol
     operator_converter_dict = {
         "+": "add",
         "-": "subtract",
@@ -271,24 +294,39 @@ class UserDetails:
     }
 
     def __init__(self):
-        self.__update_user_records()
+        """
+        Updates local copy of user records. Also reads the encryption key
+        which is used for encrypting password.
+        """
+        self.__update_local_user_records()
         self.__get_encryption_key()
 
-    def __update_user_records(self):
-        """ Update user records and username """
+    def __update_local_user_records(self):
+        """
+        Reads all records from data storage and constructs a dictionary
+        where the usernames serve as keys, and the associated records
+        are the corresponding values. If read from data storage failied,
+        will throw exception.
+        """
         try:
             data = USER_RECORDS_WORKSHEET.get_all_records()
-        except:
-            print("Something went wrong. Try again later")
+        except Exception:
+            show_error_msg_with_timeout(
+                "Something went wrong. Try again later")
             raise
         self.__user_records = {record['username']: record for record in data}
 
     def is_username_exist(self, username):
-        """ Check username exist or not """
+        """ Checks same user name already exists in the data storage. """
         return username in self.__user_records
 
     def is_valid_credential(self, username, password):
-        """ Check the credentials """
+        """
+        Validates user name and password against values in the data storage.
+        Password read from data storage is decrypted and compared aginst the
+        received password. If password or username does not match, returns
+        false otherwise returns true.
+        """
         if not self.is_username_exist(username):
             return False
 
@@ -299,7 +337,12 @@ class UserDetails:
         return False
 
     def add_user(self, username, password):
-        """ Add user details to worksheet """
+        """
+        Add user details to data storage. If save to data storage failied,
+        error message will be displayed to user. Password is encrypted before
+        writing to data storage. Also, updates local copy of user records
+        if user is added registered succesfully.
+        """
         ciphertext = self.__encrypt_password(password).decode("utf-8")
         try:
             print("saving data...")
@@ -307,19 +350,27 @@ class UserDetails:
                 username, ciphertext,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
             ])
-            self.__update_user_records()
+
+            self.__update_local_user_records()
+
             color_print(Fore.GREEN, "User registered successfully.")
-        except:
-            show_error_msg_with_timeout("Unable to register user, \
-                                        try again later")
+        except Exception:
+            show_error_msg_with_timeout(
+                "Unable to register user, try again later")
 
     def get_score(self, username, level, operator):
-        """ return score """
+        """ Returns score of the username from the data storage """
         return self.__user_records[username][self.level_operator_str(level,
                                                                      operator)]
 
     def update_score(self, username, level, operator, score):
-        """ Update the score """
+        """
+        Updates the score to data storage. If the current score is less than or
+        equal to highest scrore in the data storage, then score will not be
+        updated to data storage. If update score failied due to some reason,
+        error message will be displayed. Also, updates local user records,
+        if score updated succesfully.
+        """
         if score <= self.get_score(username, level, operator):
             return
         try:
@@ -329,47 +380,56 @@ class UserDetails:
             col_to_update = UserDetails.score_cell_index_dict[
                 self.level_operator_str(level, operator)]
             cell_to_update = USER_RECORDS_WORKSHEET.cell(username_cell.row,
-                                                        col_to_update)
+                                                         col_to_update)
             cell_to_update.value = score
             USER_RECORDS_WORKSHEET.update_cells([cell_to_update])
-            self.__update_user_records()
+
+            self.__update_local_user_records()
             print("Score updated successfully")
         except Exception:
-            print("Sorry! Failed to update the score.")
+            show_error_msg_with_timeout("Sorry! Failed to update the score.")
 
     def level_operator_str(self, level, operator):
+        """ Generates string for user selected level and operator """
         return f"{level}_{UserDetails.operator_converter_dict[operator]}"
 
     def __get_encryption_key(self):
+        """
+        Reads the encryption key from heroku environment. If failed to read
+        the key, exception will be thrown and application will not start.
+        """
         key_str = os.getenv("Encryption_key")
         if key_str is None:
             f = open("encryption_key.txt", "r")
             print("Reading from file...")
             key_str = f.readline()
+
         key_str_bytes = key_str.encode("utf-8")
         self.encryption_key = base64.urlsafe_b64encode(
             key_str_bytes.ljust(32)[:32]
         )
 
     def __encrypt_password(self, password):
+        """ Encrypt password using the encryption key """
         fernet = Fernet(self.encryption_key)
         return fernet.encrypt(password.encode("utf-8"))
-    
+
     def __decrypt_password(self, ciphertext):
+        """ Decrypt cipher text and returns the password as string """
         fernet = Fernet(self.encryption_key)
         return fernet.decrypt(ciphertext)
 
-def wait_user_input():
-    input("Press Enter to continue...")
 
 def operator_menu():
     """
     Displays the operator menu for the user to select arithmatic
-    operators '+', '-' or '*' or '/'
+    operators '+', '-' or '*' or '/'. Also shows the option to quit the number
+    game and go back to user option menu. This menu clears the screen first
+    and if user selected invalid option, shows menu again.
     """
     operator_selection = """
 
-*******Arithmatic Operator*******
+****** Arithmatic Operator ******
 
 Please select an option below:
 1. Addition
@@ -394,19 +454,21 @@ Please select an option below:
         elif opertion_menu_response == "5":
             return 'q'
         else:
-            show_error_msg_with_timeout("Invalid input. Please enter 1 or 2 or 3 or 4 or 5")
+            show_error_msg_with_timeout(
+                "Invalid input. Please enter 1 or 2 or 3 or 4 or 5")
 
 
 def level_menu():
     """
-    Displays the level menu for the user to select levels
-    Easy, Medium or Hard or Quit
+    Displays the level menu which are Easy, Medium or Hard or Quit.
+    Quit option allows user to exit the number game and go back to user
+    options menu. if user selected invalid option, shows menu again.
     """
     while True:
         clear_screen()
         game_level_selection = """
 
-*******Game Level*******"
+******* Game Level *******"
 
 Please select an option below
 1. Easy
@@ -426,11 +488,18 @@ Please select an option below
         elif level_menu_response == "4":
             return "q"
         else:
-            show_error_msg_with_timeout("Invalid input. Please enter 1 or 2 or 3 or 4")
+            show_error_msg_with_timeout(
+                "Invalid input. Please enter 1 or 2 or 3 or 4")
 
 
 def start_game(user_manager):
-    """ Start the game by getting the level and operator. """
+    """
+    Start the number game. This function first clear the screen.
+    Shows user to select the required level and required operator. Once user
+    selected level and operator, starts to show the questions for the
+    selected level and operator.
+    """
+    clear_screen()
     level = level_menu()
     if level == "q":
         return
@@ -441,19 +510,25 @@ def start_game(user_manager):
 
     clear_screen()
     print(f"\n\nStarting number game for the level '{level}' for the "
-         f"operator '{UserDetails.operator_converter_dict[operator]}'")
+          f"operator '{UserDetails.operator_converter_dict[operator]}'")
     arithmatic_operator = ArithmaticOperator(level, operator)
     score = arithmatic_operator.start()
     user_manager.update_score(level, operator, score)
 
-    color_print(Fore.GREEN, f"Your current score is {score} and highest score is "
-            f"{user_manager.get_score(level, operator)}")
+    color_print(Fore.GREEN,
+                f"Your current score is {score} and highest "
+                f"score is {user_manager.get_score(level, operator)}")
 
     wait_user_input()
 
 
 def show_score(user_manager):
-    """ Show score """
+    """
+    Show highest score for the logged in user for every level and
+    every operator in tablular format. This function clear screen before
+    showing the score for the user. Also wait for user to press Enter key
+    to exit.
+    """
     clear_screen()
     print("Your Score:")
     score_list = [['Level', 'Add', 'Subtract', 'Multiply', 'Divide']]
@@ -465,17 +540,18 @@ def show_score(user_manager):
         score_list.append(level_score_list)
     print("\n")
     color_print(Fore.LIGHTCYAN_EX, tabulate(score_list,
-                              headers="firstrow",
-                              tablefmt="orgtbl"
-    ))
+                                            headers="firstrow",
+                                            tablefmt="orgtbl"))
 
     wait_user_input()
 
 
 def user_options_menu(user_manager):
     """
-    Displays the user option menu which are Game, Show Score
-    and Quit.
+    Displays the user option menu which are start number Game, Show Score
+    and Quit. Start number game option can be used to start number game,
+    show Your score, displays highest score for the log in user for every level
+    and every arithmatic operators.
     """
     user_options = """
 
@@ -498,16 +574,18 @@ Please select an option below
         elif user_options_menu_response == "3":
             return
         else:
-            show_error_msg_with_timeout("Invalid input. Please enter 1 or 2 or 3")
+            show_error_msg_with_timeout(
+                "Invalid input. Please enter 1 or 2 or 3")
 
 
 def main_menu():
     """
     Displays the main menu options for the user to
-    create or login account in order to start the game.
+    create or login or shows the instructions for the game.
+    This function clear s the screen first before showing the option menu.
     """
     clear_screen()
-    
+
     ascii_art = pyfiglet.figlet_format("Number Ninja", font="slant")
     color_print(Fore.YELLOW, ascii_art)
 
@@ -532,35 +610,40 @@ Please select an option below
         elif main_menu_response == "3":
             show_instruction_menu()
         else:
-            show_error_msg_with_timeout("Invalid input. Please enter 1 or 2 or 3")
+            show_error_msg_with_timeout(
+                "Invalid input. Please enter 1 or 2 or 3")
         clear_screen()
 
 
 def show_instruction_menu():
+    """
+    Displays the instruction menu in color. Screen is cleared first before
+    showing the instructions for the menu
+    """
     clear_screen()
     color_print(Fore.LIGHTCYAN_EX, """
 ************************** Instructions *************************
-          
+
 1. User account is required to start the game. If user account not
    created, use sign up option from main menu to create one.
 2. Use Login option from main menu to login to the application.
 3. Once login, user will presented with options to start game
-   or show score. 
-4. Start game option can be used to select the game 
+   or show score.
+4. Start game option can be used to select the game
    and required arithmatic oprator to play the game.
-5. Show score option can be used show the score for the user.
-6. User will be presented with 10 games for the selected level 
+5. Show score option can be used to show the score for the user.
+6. User will be presented with 10 games for the selected level
    and operator when select game is selected.
-7. For division interger part of quotient is considered as correct.
-For example, For the question 9/2, correct answer is 4.
+7. For division interger part of quotient is considered as correct answer.
+   For example, for the question 9/2, correct answer is 4.
 8. For level easy, two random number between 0 and 9 will be used to
-generate question
+   generate question
 9. For level medium, two random number between 0 and 99 will be used to
-generate question
+   generate question
 10. For level hard, two random number between 0 and 9999 will be used to
-generate question
-11. From any level in the game, can use option 'Quit' to go back to 
-previous level.
+    generate question
+11. From any level in the game, can use option 'Quit' to go back to
+    previous level.
 """)
     wait_user_input()
 
@@ -571,13 +654,24 @@ def clear_screen():
 
 
 def color_print(color, message):
+    """
+    Shows the print in the required color given as parameter.
+    After the print, resets color back to default
+    """
     print(color, message)
     print(Style.RESET_ALL)
 
 
 def show_error_msg_with_timeout(msg):
+    """ Shows error message in red color and sleeps for 2 seconds. """
     color_print(Fore.RED, msg)
     time.sleep(2)
+
+
+def wait_user_input():
+    """ Waits for user to press Enter key """
+    input("Press Enter to continue...")
+
 
 def main():
     """ Runs necessary functions at the start of the program. """
