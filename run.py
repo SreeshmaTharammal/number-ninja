@@ -400,9 +400,9 @@ class UserDetails:
         """
         key_str = os.getenv("Encryption_key")
         if key_str is None:
-            f = open("encryption_key.txt", "r")
-            print("Reading from file...")
-            key_str = f.readline()
+            show_error_msg_with_timeout(
+                "Something went wrong. Unable to start the program")
+            raise
 
         key_str_bytes = key_str.encode("utf-8")
         self.encryption_key = base64.urlsafe_b64encode(
